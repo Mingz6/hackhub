@@ -21,6 +21,13 @@
   if (window.top !== window.self) return;
   if (document.getElementById('clod-nav-sidebar')) return;
   console.log('%c[CLōD Navigator] Script loaded on: ' + location.href, 'color: #6c63ff; font-weight: bold; font-size: 14px;');
+  console.log(
+    '%c[CLōD Navigator] Demo / Testing shortcuts:\n' +
+    '  ⌥ Option + Shift + W  →  replay welcome effect instantly (no reload)\n' +
+    '  __clodPreviewWelcome()  →  same, via console\n' +
+    '  __clodResetWelcome()    →  full reset (clears storage + reloads)',
+    'color: #a89fff; font-size: 12px;'
+  );
   document.documentElement.setAttribute('data-clod-navigator-loaded', 'true');
 
   // ─── Configuration ───────────────────────────────────────────────
