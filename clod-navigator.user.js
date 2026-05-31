@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.5
+// @version      1.0.6
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        *://*/*
@@ -490,14 +490,16 @@
           model,
           messages: messages,
           temperature: 0.3,
-          max_completion_tokens: 1200
+          max_completion_tokens: 4000
         }),
       })
         .then((response) => {
           if (response.status >= 200 && response.status < 300) {
             try {
               const data = JSON.parse(response.responseText);
-              resolve(data.choices[0].message.content);
+              const msg = data.choices[0].message;
+              // DeepSeek R1 may put reasoning in reasoning_content, actual answer in content
+              resolve(msg.content || msg.reasoning_content || '');
             } catch (e) {
               reject(new Error('Failed to parse API response'));
             }
@@ -558,15 +560,15 @@ RULES:
   function parseAssistantJson(raw) {
     let cleaned = String(raw || '').trim();
 
+    // Strip DeepSeek R1 <think>...</think> blocks
+    cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+
     if (cleaned.startsWith('```')) {
       cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
     }
 
-    const firstBrace = cleaned.indexOf('{');
-    const lastBrace = cleaned.lastIndexOf('}');
-    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
-      cleaned = cleaned.slice(firstBrace, lastBrace + 1);
-    }
+    // Find the outermost JSON object using bracket matching
+    cleaned = extractJsonObject(cleaned);
 
     cleaned = cleaned
       .replace(/,\s*([}\]])/g, '$1')   // trailing commas
@@ -581,11 +583,43 @@ RULES:
       };
     } catch (err) {
       console.warn('[CLōD Navigator] Could not parse model JSON:', raw, err);
+      // Fallback: try to extract "message" value as plain text
+      const msgMatch = raw.match(/"message"\s*:\s*"((?:[^"\\]|\\.)*)"/)
+      if (msgMatch) {
+        return { message: msgMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'), steps: [] };
+      }
       return {
-        message: cleaned.slice(0, 500) || 'I received a response, but could not turn it into page guidance. Try asking with simpler words like "where do I start?"',
+        message: 'I received a response, but could not turn it into page guidance. Try asking with simpler words like "where do I start?"',
         steps: []
       };
     }
+  }
+
+  // Bracket-matched JSON extraction (handles braces inside strings)
+  function extractJsonObject(text) {
+    const start = text.indexOf('{');
+    if (start === -1) return text;
+
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+
+    for (let i = start; i < text.length; i++) {
+      const ch = text[i];
+      if (escape) { escape = false; continue; }
+      if (ch === '\\' && inString) { escape = true; continue; }
+      if (ch === '"') { inString = !inString; continue; }
+      if (inString) continue;
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) return text.slice(start, i + 1);
+      }
+    }
+    // Fallback: first { to last }
+    const lastBrace = text.lastIndexOf('}');
+    if (lastBrace > start) return text.slice(start, lastBrace + 1);
+    return text;
   }
 
   // ─── Process User Message ────────────────────────────────────────
