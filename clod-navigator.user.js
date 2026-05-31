@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.1.0
+// @version      1.2.0
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        *://*/*
@@ -688,15 +688,16 @@ RESPONSE FORMAT — You MUST respond in valid JSON (no markdown, no backticks):
 }
 
 RULES:
-1. Always respond in the JSON format above. No extra text, no reasoning, no analysis. Output ONLY the JSON object.
-2. The "message" field must be a SHORT user-facing sentence (max 2 sentences). Never put your internal reasoning or analysis there.
+1. Always respond in the JSON format above. No extra text, no reasoning, no analysis. Output ONLY the JSON object. Do NOT write anything before or after the JSON.
+2. The "message" field must be a SHORT user-facing sentence (max 2 sentences). NEVER put your internal reasoning, analysis, or thought process in the message field. No "Wait", "Let me check", "Looking at", or similar phrases.
 3. Use ONLY elements that exist in the provided list. Never invent elements.
 4. If you can't find the right element, set steps to empty [] and explain in message.
 5. Keep explanations warm and encouraging — like a patient friend helping a beginner.
 6. For multi-step tasks, list steps in order. The UI will guide one step at a time.
 7. If the user says something like "I did it!" or confirms a step, congratulate them.
 8. For greetings or "how do I start?", point them to the most logical first action on the page.
-8. JSON property names and string values must use double quotes. Do not use comments, trailing commas, or JavaScript expressions.`;
+9. JSON property names and string values must use double quotes. Do not use comments, trailing commas, or JavaScript expressions.
+10. The "target" object in each step MUST match one of the elements from the INTERACTIVE ELEMENTS list. Copy the exact text/id/ariaLabel values — do not paraphrase.`;
   }
 
   // ─── Resilient JSON Parser ────────────────────────────────────────
@@ -705,6 +706,16 @@ RULES:
 
     // Strip DeepSeek R1 <think>...</think> blocks
     cleaned = cleaned.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+
+    // Strip reasoning/thinking text BEFORE the JSON object
+    // Models sometimes emit "Wait, I need to check..." or "Let me look at..." before the JSON
+    const firstBrace = cleaned.indexOf('{');
+    if (firstBrace > 0) {
+      const preamble = cleaned.slice(0, firstBrace);
+      if (/^[^{}"]*$/s.test(preamble)) {
+        cleaned = cleaned.slice(firstBrace);
+      }
+    }
 
     if (cleaned.startsWith('```')) {
       cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
@@ -725,7 +736,7 @@ RULES:
 
       // Detect reasoning leak: model put its internal analysis in the message field
       const looksLikeReasoning = message.length > 300
-        || /\b(idx \d|the user is asking|looking at the|current page context)\b/i.test(message);
+        || /\b(idx \d|the user is asking|looking at the|current page context|let me check|I need to check|wait,? I|checking the|I should|the elements? (?:list|array)|target object|let me (?:look|find|see)|analyzing|based on the)\b/i.test(message);
 
       return {
         message: looksLikeReasoning
@@ -735,14 +746,20 @@ RULES:
       };
     } catch (err) {
       console.warn('[CLōD Navigator] Could not parse model JSON:', raw, err);
-      // Fallback: try to extract "message" value as plain text
+      // Fallback: try to extract "message" and "steps" from raw text
       const msgMatch = raw.match(/"message"\s*:\s*"((?:[^"\\]|\\.)*)"/)
+      let fallbackSteps = [];
+      try {
+        const stepsMatch = raw.match(/"steps"\s*:\s*(\[\s*\{[\s\S]*?\])/)
+        if (stepsMatch) fallbackSteps = JSON.parse(stepsMatch[1].replace(/,\s*([}\]])/g, '$1'));
+      } catch (_) {}
+
       if (msgMatch) {
-        return { message: msgMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'), steps: [] };
+        return { message: msgMatch[1].replace(/\\n/g, '\n').replace(/\\"/g, '"'), steps: fallbackSteps };
       }
       return {
         message: 'I received a response, but could not turn it into page guidance. Try asking with simpler words like "where do I start?"',
-        steps: []
+        steps: fallbackSteps
       };
     }
   }
@@ -1025,11 +1042,12 @@ RULES:
       removeTypingIndicator(typingEl);
 
       addMessage('assistant', result.message);
-      chatHistory.push({ role: 'assistant', content: result.message });
+      chatHistory.push({ role: 'assistant', content: JSON.stringify(result) });
       if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(-MAX_HISTORY);
       saveChatHistory();
 
       if (result.steps && result.steps.length > 0) {
+        addMessage('system', `📍 ${result.steps.length} step${result.steps.length > 1 ? 's' : ''} to guide you — watch for the spotlight!`);
         startStepGuide(result.steps);
       } else {
         clearHighlight();
@@ -1218,7 +1236,19 @@ RULES:
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         chatHistory = parsed;
-        parsed.forEach(msg => addMessage(msg.role, msg.content));
+        parsed.forEach(msg => {
+          if (msg.role === 'assistant') {
+            // History stores full JSON result — extract just the message for display
+            try {
+              const result = JSON.parse(msg.content);
+              addMessage(msg.role, result.message || msg.content);
+            } catch (_) {
+              addMessage(msg.role, msg.content);
+            }
+          } else {
+            addMessage(msg.role, msg.content);
+          }
+        });
         return true;
       }
     } catch (_) {}
