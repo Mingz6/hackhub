@@ -1032,8 +1032,16 @@ RULES:
       }
     });
 
-    // Overlay click: dismiss spotlight
-    overlay.addEventListener('click', () => {
+    // Overlay click: forward click to highlighted element if within bounds, otherwise dismiss
+    overlay.addEventListener('click', (e) => {
+      if (highlightedEl) {
+        const rect = highlightedEl.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right &&
+            e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          highlightedEl.click();
+          return;
+        }
+      }
       cleanupStepHandler();
       clearHighlight();
       document.getElementById('clod-nav-step-bar')?.classList.remove('active');
