@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.1
+// @version      1.0.2
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        https://app.clod.io/*
@@ -18,7 +18,12 @@
 
 (function () {
   'use strict';
-  console.log('[CLōD Navigator] Script loaded on:', location.href);
+  console.log('%c[CLōD Navigator] Script loaded on: ' + location.href, 'color: #6c63ff; font-weight: bold; font-size: 14px;');
+  console.log('[CLōD Navigator] Tampermonkey GM APIs available:', {
+    GM_getValue: typeof GM_getValue,
+    GM_setValue: typeof GM_setValue,
+    GM_xmlhttpRequest: typeof GM_xmlhttpRequest
+  });
 
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
@@ -794,14 +799,20 @@ RULES:
 
   // ─── Initialize ──────────────────────────────────────────────────
   function init() {
+    console.log('[CLōD Navigator] init() called. readyState:', document.readyState, 'body:', !!document.body);
     // Guard: don't inject twice (Chrome can re-run scripts on SPA navigation)
-    if (document.getElementById('clod-nav-sidebar')) return;
+    if (document.getElementById('clod-nav-sidebar')) {
+      console.log('[CLōD Navigator] Already injected, skipping.');
+      return;
+    }
 
     // Wait for body to exist (Chrome MV3 timing can be different from Safari)
     if (!document.body) {
+      console.log('[CLōD Navigator] No body yet, setting up MutationObserver...');
       const observer = new MutationObserver(() => {
         if (document.body) {
           observer.disconnect();
+          console.log('[CLōD Navigator] Body appeared via observer, calling buildUI()');
           buildUI();
         }
       });
@@ -809,11 +820,14 @@ RULES:
       return;
     }
 
+    console.log('[CLōD Navigator] Body exists, calling buildUI()');
     buildUI();
   }
 
   // document-idle means DOM is ready, but double-check for SPA frameworks
+  console.log('[CLōD Navigator] readyState at script end:', document.readyState);
   if (document.readyState === 'loading') {
+    console.log('[CLōD Navigator] Waiting for DOMContentLoaded...');
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
