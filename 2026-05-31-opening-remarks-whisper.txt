@@ -1,0 +1,118 @@
+ to host hackathon like 24 hours 48 hours even longer now we are able to host a hackathon within
+ eight hours so that's amazing so that's why i think like vibe coding brings a lot of people
+ from different industries a lot of experts um and even like non non-coder non-tech people join our
+ hackathons i'm so excited to see what you guys can build within a day using vibe coding if you
+ haven't like do any programming before that's fine we'll have a workshop teach you how to live code
+ today so you can learn and build in a day all right before that uh let's welcome kevin uh one of our
+ grand prize sponsor pack and he is going to give a quick remarks for today thank you very much uh
+ thanks jen uh thanks to the host and all the sponsors including myself and thanks to cozylab for having
+ thanks uh my name is kevin so uh when i was very young i fall in love with technology um since grade one
+ and grade two and um i played a lot of solitary and minesweeper but and i tried programming myself too
+ but my parents the conventional family they said hey you it's better to focus on the academic and they
+ kindly put my keyboard in a box and they put a lock on it so i couldn't enhance my programming career from
+ there however it's not an excuse it's not i'm not blaming my parents i love them um but it's a story
+ i kind of learned myself you do not give up you're going to be resilient so there's no reasons or
+ excuses for for anything um for doing what you love so with the technology today enables everybody to
+ become your own founder become your own entrepreneur and also a lot easier to make a product everybody can
+ become a super company yourself rather than having a many huge amount of people to work on a project we
+ can do a lot on ourselves nowadays too so interestingly enough i circle back my career into what real
+ estate and they currently were working on a data center project from turning a two megawatt legacy data center
+ into a upgrading and also uh retrofitting into a 10 megawatt ai computing facility in burgundy so
+ um uh that's also another uh small bit of a challenge i love to share with everybody to say here uh
+ when you build a product consider what is the use of the product what is the problem you're trying to
+ solve from day to day and to a more societal approach what is the problem to solve and also i try to ask
+ everybody to maybe consider the data layer um to to see like what is the best use of the of data and also
+ what could be a local computing scenario to use up the two to the 10 megawatt smaller data centers so
+ that's something i'd love to share with everybody and looking forward to see the product by the end of today
+ all right thank you thank you thank you all right so a little bit uh about a rundown i think you
+ are curious about it i try to simplify it give you more time to build uh so 10 30 we will have a team
+ up who haven't formed a team here oh a lot of okay cool so we'll do a team up at 10 30 and starting 11
+ you can start hacking actually you can start now i don't mind you start early but let's do it
+ just today okay we will have a codex workshop uh by kai uh do we have kai here yeah so kai will give
+ kai from kai is a codex uh ambassador in vancouver and he is going to give a codex workshop to you guys
+ at 11 and we'll have lunch today at 12 and a code review with ai workshop provided by adam adam's awesome
+ like teach you how to do code review with ai across different platforms using different models that'll be
+ awesome to code review before you submit and then at four uh it's submission deadline and there will be a
+ demo uh i will talk a little bit more about the demo and judging and then five o'clock at work very
+ compact day but i believe you guys can do it okay all right a little bit about cozy lab actually i would
+ like to introduce nick to give a quick introduction about uh cozy lab which is a space here it's awesome and yeah
+ thank you ian um thank you for having me so uh my name is nick lee i'm the owner for cozy lab so i'm
+ creating the space for all the young like entrepreneur talent in vancouver to collaborating and work
+ together in a no commitment and affordable price so and you can see we have over 23 rooms we open 24 7. so
+ people can just come here and uh you can just scan the qr code and the prices uh our cost is really cheap it's like 20 bucks
+ you can come here to use 24 hours so we have a complimentary coffee we have the oldest sparkling water and even beer or
+ or like uh tequila if you want yeah so yeah so so we just want to try to create a space in the central vancouver
+ and even if you want to book a room or like a monthly space like uh we are all available for everyone and
+ we have a front desk like working from 9 30 to 5 30 yeah so if you have a need for using the co-working
+ space just let me know thank you nick i think i need to host a beer hacks next time please you guys have
+ a beer and tequila hacks all right codex uh kai do you want to give a quick introduction about codex or
+ okay cool no problem i can help you to introduce it's just one word everyone knows okay so codex is
+ a coding agent that helps you build and shift with ai powered by chat dpt i think everyone is chat dpt
+ uh and codex is awesome i use it day today i really like it that's why we onboard codex on this hackathon
+ and there will be codex credit to you guys if you guys want to use it today and yeah we had kevin
+ introduced pack so i don't want to read it again but yeah just read it and thank you for pack uh for
+ sponsoring our event and cloud so it's cloud not clock but cloud is awesome and also a vancouver company
+ i don't know before this event so cloud provides a infrastructure to host open source models and it's
+ really cheap not i shouldn't use cheap it's cost efficient and you can run a lot of tokens with
+ like minimum price 60 percent cheaper token yeah this is cheaper but i'm fine with it okay cool so you
+ will get called um aki tokens today and i believe george from cloud has already standing instruction in
+ discord if you want to use it today i highly recommend you try it out and just sign up and get the 25
+ credit i i cannot spend 25 in a day actually so try it okay oh pro match so pro match is an ai
+ powered platform that is to make matching faster it's also one of our sponsor actually food sponsor
+ and it helps companies to do matching candidates clients teams and projects better so if you're
+ interested talk to me and i'm interested in introducing more about pro match to you and bravo okay so we have
+ representative for bravo okay if you haven't used bravo try that's my day-to-day use for chinese restaurants
+ actually so uh you can use amax to actually uh add credit to it and spend it you know amax you got a lot
+ of perks right so i use it every day and you get rewards uh what every time you're spending restaurants so
+ uh and today they are going to sponsor a 300 gift card you can spend in restaurants all right that's
+ pretty cool and elk is water so water over there it's awesome try it and if you need more uh let mike
+ know where's mike mike is gone okay that's fine so they sponsor a lot of like sports events in vancouver like
+ i think some like marathon events and uh i talked to mike and he's really interested in like working
+ with hackathons i i believe you need to drink more water when you're coding right so yeah coffee is
+ dehydrating but water you'll get it okay also community partners imp capital uh industrial ai
+ and uh triangle club we have we'll have mars here triangle club like we met at his space in um worry drive
+ it's awesome a good good place for lunch if you guys want to book a place for like a hell talk to mars
+ and alumify which is one of my students uh startup and they help uh lifelong learning so yeah talk to me if you're
+ interested in that cool a lot of people ask about it okay so now it's a theme your second brain is
+ interesting any idea coming out okay so today we're going to build ai that helps people remember
+ learn reason and act with the knowledge they already have all right think about it it can be software
+ any hardware anyone do a hardware hack today what kind of hardware like the house in the healthy part
+ house deck yeah okay cool yeah i do hardware hack i have tons of raspberry pi at home and uh yeah and
+ i hack on smart buses as well so if you need help with hardware or if you want to bring hardware hack let
+ me know i can mentor you or help you okay and judging criteria i will have four categories that judges will
+ look into uh innovation technology technical execution usability and the problem relevance i used to have
+ fifth which is go to market plan that's something that i really want to know but it's not a must if you
+ have that covered it will be bonus uh all right so take a picture on that i can close down this score
+ later but yeah i try to remember it so you should cover this in your submission since we have a lot of
+ people here and i want everyone to demo our project uh to the judges so each team has two minutes max
+ all right try to be an elevator pitch with a demo all right three things you want to show problem what
+ hurts demo what did you build a live demo i don't like a like a like a kind of fake demo a real demo
+ i really want to give the sum up for real demo uh impact why does it matter all right we want to make
+ impact all right grand prize 500 cash all right so i last time i see cash prices was in my
+ previous hack but yeah not a lot of hackers on offer cash price and thank you to our sponsor pack
+ and also 500 regular office space credit so they have an office space as well if you guys interest
+ and get that space on your wing uh and best use of codex we've got a hundred dollar token credit for
+ each team member all right if you have three people then 300 five people 500 right i recommend you form
+ large team so you can collaborate and learn from each other and gain what token best use of cloud 500
+ token and credit for the team all right so no matter how large is our team if you use cloud then if you
+ win it you got 500 all right best ai for lifelong learning that's my favorite because i teach uh bootcamp
+ so a full scholarship to write coding bootcamp by hack up actually i'm going to teach it if you are
+ are interesting go apply for that and best ai for physical commerce that's 300 gift card for bravo you
+ can use it today downstairs or somewhere around here with the bravo sticker on it you can just spend it
+ and bonus job price sponsored by uh access to order yeah there will be a draw price as well and winner will
+ get one of those 3d printed mathematical or avatar whatever i design it and i print it at home i hope
+ you like it all right uh this board again the last time i showed the discord get it okay cool all right
+ so uh before we begin the hack uh let's review conduct conduct respect include build honestly keep it safe ask for
+ help all right so everyone not first time hackathon right anyone here first time hackathon oh we got a
+ few all right so hackathon is more like a community event and i fall in love with since i'm in university
+ so that's why i keep doing it almost for free all right so um yeah try to follow the code of conduct if
+ you have any questions reach out to me or any staff here uh and all the staff here today are volunteers so
+ they yeah love pass to the staff here who make it happen thank you live coding and we are going to
+ start a team formation so if you don't have a team come to uh this room actually we have that room
+ opening and we can talk about your project and then form a team all right and then we will start the
+ we'll start the codex workshop at let's do it 10 30 so we can start early all right and we leave more
+ time for your hacks all right i will let you guys know the submission link in the discord channel there will be a link
+ uh you submit it uh i don't really like uh dev post i don't mean like it's not good it's a little bit too
+ complicated for a small scale hackathon we want to make it simple and then it probably will be just a
+ link and you submit your project and judges will come and make a job all right are you guys ready for
+ vibe coding today let's do it
