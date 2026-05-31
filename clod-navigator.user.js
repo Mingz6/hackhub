@@ -27,7 +27,7 @@
 
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
-  const MODEL = 'DeepSeek V3@latency';
+  const MODEL = 'gpt-4o-mini';
   const STORAGE_KEY = 'clod_navigator_api_key';
 
   // ─── State ───────────────────────────────────────────────────────
