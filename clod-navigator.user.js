@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.3
+// @version      1.0.4
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        *://*/*
@@ -24,7 +24,7 @@
 
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
-  const MODELS = ['DeepSeek V4 Pro', 'DeepSeek V3.2', 'DeepSeek R1'];
+  const MODELS = ['DeepSeek V3', 'DeepSeek R1'];
   const STORAGE_KEY = 'clod_navigator_api_key';
 
   // ─── GM API Abstraction (classic GM_* + newer GM.* + fallbacks) ──
@@ -60,13 +60,18 @@
     return new Promise((resolve, reject) => {
       const requester = getGMApi('xmlhttpRequest');
       if (requester) {
-        requester({ ...details, onload: resolve, onerror: reject, ontimeout: reject });
+        requester({
+          ...details,
+          onload: resolve,
+          onerror: (err) => reject(new Error(`XHR error: ${err.error || err.statusText || 'connection failed'}`)),
+          ontimeout: () => reject(new Error('Request timed out')),
+        });
         return;
       }
       // Fallback to fetch (limited by CORS)
       fetch(details.url, { method: details.method, headers: details.headers, body: details.data })
         .then(async (response) => resolve({ status: response.status, responseText: await response.text() }))
-        .catch(reject);
+        .catch((err) => reject(new Error(`Fetch error: ${err.message}`)));
     });
   }
 
@@ -467,10 +472,9 @@
         return await callClodModel(model, messages);
       } catch (err) {
         errors.push(`${model}: ${err.message}`);
-        if (!err.message.includes('404')) throw err;
       }
     }
-    throw new Error(`No configured CLōD model is available. Tried: ${errors.join(' | ')}`);
+    throw new Error(`All models failed. ${errors.join(' | ')}`);
   }
 
   function callClodModel(model, messages) {
@@ -501,7 +505,7 @@
             reject(new Error(`API error ${response.status}: ${response.responseText?.slice(0, 200)}`));
           }
         })
-        .catch(() => reject(new Error('Network error calling CLōD API')));
+        .catch((err) => reject(new Error(`Network error: ${err.message || 'Unknown failure calling CLōD API'}`)));
     });
   }
 
