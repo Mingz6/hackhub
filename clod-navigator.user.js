@@ -843,7 +843,7 @@ RULES:
       // Arrow
       const arrow = document.createElement('div');
       arrow.id = 'clod-nav-arrow';
-      arrow.textContent = '�';
+      arrow.textContent = '👇';
       arrow.style.top = `${rect.top - 45}px`;
       arrow.style.left = `${rect.left + rect.width / 2 - 16}px`;
       document.body.appendChild(arrow);
