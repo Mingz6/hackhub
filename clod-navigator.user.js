@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.6
+// @version      1.1.0
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        *://*/*
@@ -24,7 +24,7 @@
 
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
-  const MODELS = ['DeepSeek V3', 'DeepSeek R1'];
+  const MODELS = ['meta-llama/Llama-4-Scout-17B-16E-Instruct', 'Qwen 2.5 72B', 'DeepSeek V3'];
   const STORAGE_KEY = 'clod_navigator_api_key';
 
   // ─── GM API Abstraction (classic GM_* + newer GM.* + fallbacks) ──
@@ -62,14 +62,21 @@
       if (requester) {
         requester({
           ...details,
+          anonymous: true,
           onload: resolve,
-          onerror: (err) => reject(new Error(`XHR error: ${err.error || err.statusText || 'connection failed'}`)),
+          onerror: (err) => {
+            console.warn('[CLōD Navigator] GM_xmlhttpRequest failed, trying fetch fallback:', err);
+            // Fallback to fetch on GM_xmlhttpRequest failure (Safari Tampermonkey workaround)
+            fetch(details.url, { method: details.method, headers: details.headers, body: details.data, mode: 'cors' })
+              .then(async (response) => resolve({ status: response.status, responseText: await response.text() }))
+              .catch((fetchErr) => reject(new Error(`Network error: ${fetchErr.message || 'Load failed'}`)));
+          },
           ontimeout: () => reject(new Error('Request timed out')),
         });
         return;
       }
-      // Fallback to fetch (limited by CORS)
-      fetch(details.url, { method: details.method, headers: details.headers, body: details.data })
+      // No GM API available — use fetch directly
+      fetch(details.url, { method: details.method, headers: details.headers, body: details.data, mode: 'cors' })
         .then(async (response) => resolve({ status: response.status, responseText: await response.text() }))
         .catch((err) => reject(new Error(`Fetch error: ${err.message}`)));
     });
@@ -80,18 +87,27 @@
     if (window.CSS && typeof window.CSS.escape === 'function') {
       return window.CSS.escape(String(value));
     }
-    return String(value).replace(/["\\]/g, '\\$&');
+    // Minimal polyfill: escape characters that break CSS selectors
+    return String(value)
+      .replace(/\0/g, '\uFFFD')
+      .replace(/([^\x20-\x7E])/g, '\\$&')
+      .replace(/^(\d)/, '\\3$1 ')
+      .replace(/["\\[\](){}#.:>+~,;!@$%^&*=|/]/g, '\\$&');
   }
 
   // ─── State ───────────────────────────────────────────────────────
   let apiKey = '';
   let isOpen = true;
+  let isSending = false;
   let currentStep = 0;
   let steps = [];
   let highlightedEl = null;
   let overlayEl = null;
   let arrowEl = null;
+  let activeStepHandler = null; // track active click handler for cleanup
   let chatHistory = [];
+  const MAX_HISTORY = 20;
+  const HISTORY_KEY = 'clod_navigator_history';
 
   // ─── Styles ──────────────────────────────────────────────────────
   const STYLES = `
@@ -276,6 +292,8 @@
     }
     #clod-nav-overlay.active {
       opacity: 1;
+      pointer-events: auto;
+      cursor: pointer;
     }
     #clod-nav-spotlight {
       position: fixed;
@@ -361,6 +379,45 @@
       background: #6c63ff;
       box-shadow: 0 0 6px #6c63ff;
     }
+    /* Typing indicator */
+    .clod-typing {
+      display: flex;
+      gap: 4px;
+      padding: 10px 14px !important;
+    }
+    .clod-typing .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #888;
+      animation: clod-dot-pulse 1.2s infinite;
+    }
+    .clod-typing .dot:nth-child(2) { animation-delay: 0.2s; }
+    .clod-typing .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes clod-dot-pulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1.1); }
+    }
+    /* Header buttons */
+    .clod-header-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+    }
+    .clod-header-btn {
+      background: #3a3a55;
+      border: 1px solid #555;
+      color: #ccc;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .clod-header-btn:hover {
+      background: #6c63ff;
+      color: white;
+      border-color: #6c63ff;
+    }
   `;
 
   // ─── DOM Page Context Extraction ─────────────────────────────────
@@ -405,7 +462,7 @@
       let selector = tag;
       if (id) selector = `#${escapeCss(id)}`;
       else if (ariaLabel) selector = `${tag}[aria-label="${escapeCss(ariaLabel)}"]`;
-      else if (text && text.length < 40) selector = `${tag}:has-text("${text.slice(0, 30)}")`;
+      else if (text && text.length < 40) selector = `${tag}`; // text-based match via findElementByDescriptor
       else if (classes) selector = `${tag}.${classes.split('.')[0]}`;
 
       descriptor.selector = selector;
@@ -418,19 +475,6 @@
       pageText: document.body?.innerText?.slice(0, 800) || '',
       elements: interactiveEls
     };
-  }
-
-  // ─── Build selector that actually works with querySelector ───────
-  function buildQuerySelector(el) {
-    if (el.id) return `#${escapeCss(el.id)}`;
-    if (el.ariaLabel) return `${el.tag}[aria-label="${el.ariaLabel}"]`;
-    if (el.placeholder) return `${el.tag}[placeholder="${el.placeholder}"]`;
-    if (el.classes) {
-      const cls = el.classes.split('.')[0];
-      if (cls) return `${el.tag}.${escapeCss(cls)}`;
-    }
-    // Fallback: tag + text content match via iteration
-    return null;
   }
 
   function findElementByDescriptor(desc) {
@@ -492,14 +536,19 @@
           temperature: 0.3,
           max_completion_tokens: 4000
         }),
+        anonymous: true,
       })
         .then((response) => {
           if (response.status >= 200 && response.status < 300) {
             try {
               const data = JSON.parse(response.responseText);
               const msg = data.choices[0].message;
-              // DeepSeek R1 may put reasoning in reasoning_content, actual answer in content
-              resolve(msg.content || msg.reasoning_content || '');
+              // DeepSeek R1: content = actual answer, reasoning_content = internal thinking (never use as response)
+              if (msg.content && msg.content.trim()) {
+                resolve(msg.content);
+              } else {
+                reject(new Error('Model returned empty content (reasoning-only response)'));
+              }
             } catch (e) {
               reject(new Error('Failed to parse API response'));
             }
@@ -546,13 +595,14 @@ RESPONSE FORMAT — You MUST respond in valid JSON (no markdown, no backticks):
 }
 
 RULES:
-1. Always respond in the JSON format above. No extra text.
-2. Use ONLY elements that exist in the provided list. Never invent elements.
-3. If you can't find the right element, set steps to empty [] and explain in message.
-4. Keep explanations warm and encouraging — like a patient friend helping a beginner.
-5. For multi-step tasks, list steps in order. The UI will guide one step at a time.
-6. If the user says something like "I did it!" or confirms a step, congratulate them.
-7. For greetings or "how do I start?", point them to the most logical first action on the page.
+1. Always respond in the JSON format above. No extra text, no reasoning, no analysis. Output ONLY the JSON object.
+2. The "message" field must be a SHORT user-facing sentence (max 2 sentences). Never put your internal reasoning or analysis there.
+3. Use ONLY elements that exist in the provided list. Never invent elements.
+4. If you can't find the right element, set steps to empty [] and explain in message.
+5. Keep explanations warm and encouraging — like a patient friend helping a beginner.
+6. For multi-step tasks, list steps in order. The UI will guide one step at a time.
+7. If the user says something like "I did it!" or confirms a step, congratulate them.
+8. For greetings or "how do I start?", point them to the most logical first action on the page.
 8. JSON property names and string values must use double quotes. Do not use comments, trailing commas, or JavaScript expressions.`;
   }
 
@@ -577,9 +627,18 @@ RULES:
 
     try {
       const parsed = JSON.parse(cleaned);
+      const message = typeof parsed.message === 'string' ? parsed.message : 'I found a possible next step.';
+      const steps = Array.isArray(parsed.steps) ? parsed.steps : [];
+
+      // Detect reasoning leak: model put its internal analysis in the message field
+      const looksLikeReasoning = message.length > 300
+        || /\b(idx \d|the user is asking|looking at the|current page context)\b/i.test(message);
+
       return {
-        message: typeof parsed.message === 'string' ? parsed.message : 'I found a possible next step.',
-        steps: Array.isArray(parsed.steps) ? parsed.steps : []
+        message: looksLikeReasoning
+          ? (steps.length > 0 ? 'Here, let me show you! Follow the highlighted steps.' : 'Let me find the right element for you — try asking more specifically.')
+          : message,
+        steps
       };
     } catch (err) {
       console.warn('[CLōD Navigator] Could not parse model JSON:', raw, err);
@@ -691,7 +750,7 @@ RULES:
       // Arrow
       const arrow = document.createElement('div');
       arrow.id = 'clod-nav-arrow';
-      arrow.textContent = '👆';
+      arrow.textContent = '�';
       arrow.style.top = `${rect.top - 45}px`;
       arrow.style.left = `${rect.left + rect.width / 2 - 16}px`;
       document.body.appendChild(arrow);
@@ -736,7 +795,15 @@ RULES:
   }
 
   // ─── Step-by-Step Execution ──────────────────────────────────────
+  function cleanupStepHandler() {
+    if (activeStepHandler) {
+      activeStepHandler.el.removeEventListener('click', activeStepHandler.fn);
+      activeStepHandler = null;
+    }
+  }
+
   function startStepGuide(stepsArray) {
+    cleanupStepHandler();
     steps = stepsArray;
     currentStep = 0;
     updateStepBar();
@@ -745,14 +812,12 @@ RULES:
 
   function showCurrentStep() {
     if (currentStep >= steps.length) {
-      // All steps done!
       clearHighlight();
       showConfetti();
       addMessage('system', '🎉 You did it! All steps completed successfully!');
       document.getElementById('clod-nav-step-bar').classList.remove('active');
       steps = [];
       currentStep = 0;
-      // Re-expand sidebar
       if (!isOpen) {
         const sidebar = document.getElementById('clod-nav-sidebar');
         const toggle = document.getElementById('clod-nav-toggle');
@@ -770,13 +835,11 @@ RULES:
     if (targetEl) {
       spotlightElement(targetEl, step.explanation);
 
-      // Listen for the user's click on the target
       const clickHandler = () => {
-        targetEl.removeEventListener('click', clickHandler);
+        cleanupStepHandler();
         currentStep++;
         updateStepBar();
 
-        // Re-expand sidebar after click
         if (!isOpen) {
           const sidebar = document.getElementById('clod-nav-sidebar');
           const toggle = document.getElementById('clod-nav-toggle');
@@ -793,9 +856,11 @@ RULES:
           showCurrentStep(); // triggers completion
         }
       };
+
+      // Store reference for cleanup
+      activeStepHandler = { el: targetEl, fn: clickHandler };
       targetEl.addEventListener('click', clickHandler, { once: true });
     } else {
-      // Can't find element — skip with message
       addMessage('error', `Hmm, I can't find that element on the page right now. Try scrolling or let me know what you see.`);
       clearHighlight();
     }
@@ -827,31 +892,57 @@ RULES:
     container.scrollTop = container.scrollHeight;
   }
 
+  function showTypingIndicator() {
+    const container = document.getElementById('clod-nav-messages');
+    const el = document.createElement('div');
+    el.className = 'clod-msg assistant clod-typing';
+    el.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+    container.appendChild(el);
+    container.scrollTop = container.scrollHeight;
+    return el;
+  }
+
+  function removeTypingIndicator(el) {
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  }
+
   async function handleSend() {
     const input = document.getElementById('clod-nav-input');
     const btn = document.getElementById('clod-nav-send');
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || isSending) return;
 
+    isSending = true;
     input.value = '';
     btn.disabled = true;
     addMessage('user', text);
     chatHistory.push({ role: 'user', content: text });
+    if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(-MAX_HISTORY);
+    saveChatHistory();
+
+    // Show typing indicator
+    const typingEl = showTypingIndicator();
 
     try {
+      // Cancel any active step guide
+      cleanupStepHandler();
+
       const result = await processMessage(text);
 
-      // Display assistant message
+      removeTypingIndicator(typingEl);
+
       addMessage('assistant', result.message);
       chatHistory.push({ role: 'assistant', content: result.message });
+      if (chatHistory.length > MAX_HISTORY) chatHistory = chatHistory.slice(-MAX_HISTORY);
+      saveChatHistory();
 
-      // Handle steps
       if (result.steps && result.steps.length > 0) {
         startStepGuide(result.steps);
       } else {
         clearHighlight();
       }
     } catch (err) {
+      removeTypingIndicator(typingEl);
       console.error('[CLōD Navigator]', err);
       if (err.message.includes('401') || err.message.includes('403')) {
         addMessage('error', 'API key seems invalid. Click the ⚙️ to update it.');
@@ -861,6 +952,7 @@ RULES:
         addMessage('error', `Oops! Something went wrong. (${err.message})`);
       }
     } finally {
+      isSending = false;
       btn.disabled = false;
       input.focus();
     }
@@ -899,6 +991,10 @@ RULES:
       <div id="clod-nav-header">
         <h2>🧭 CLōD Navigator</h2>
         <p>Your AI guide — just ask in plain language!</p>
+        <div class="clod-header-actions">
+          <button class="clod-header-btn" id="clod-btn-clear" title="Clear chat">🗑️ Clear</button>
+          <button class="clod-header-btn" id="clod-btn-settings" title="Change API key">⚙️ Key</button>
+        </div>
       </div>
       <div id="clod-nav-messages"></div>
       <div id="clod-nav-step-bar"></div>
@@ -918,6 +1014,57 @@ RULES:
       }
     });
 
+    // Escape key: dismiss spotlight/overlay
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        cleanupStepHandler();
+        clearHighlight();
+        document.getElementById('clod-nav-step-bar')?.classList.remove('active');
+        steps = [];
+        currentStep = 0;
+        // Re-expand sidebar if collapsed by spotlight
+        if (!isOpen) {
+          isOpen = true;
+          sidebar.classList.remove('collapsed');
+          toggle.classList.remove('collapsed');
+          toggle.textContent = '◀';
+        }
+      }
+    });
+
+    // Overlay click: dismiss spotlight
+    overlay.addEventListener('click', () => {
+      cleanupStepHandler();
+      clearHighlight();
+      document.getElementById('clod-nav-step-bar')?.classList.remove('active');
+      steps = [];
+      currentStep = 0;
+      if (!isOpen) {
+        isOpen = true;
+        sidebar.classList.remove('collapsed');
+        toggle.classList.remove('collapsed');
+        toggle.textContent = '◀';
+      }
+    });
+
+    // Clear chat button
+    document.getElementById('clod-btn-clear').addEventListener('click', () => {
+      chatHistory = [];
+      saveChatHistory();
+      cleanupStepHandler();
+      clearHighlight();
+      document.getElementById('clod-nav-step-bar')?.classList.remove('active');
+      steps = [];
+      currentStep = 0;
+      document.getElementById('clod-nav-messages').innerHTML = '';
+      showWelcome();
+    });
+
+    // Settings button (re-enter API key)
+    document.getElementById('clod-btn-settings').addEventListener('click', () => {
+      showKeySetup();
+    });
+
     // Check for API key
     gmGetValue(STORAGE_KEY, localStorage.getItem(STORAGE_KEY) || '')
       .then(loadKey)
@@ -927,7 +1074,9 @@ RULES:
   function loadKey(storedKey) {
     if (storedKey) {
       apiKey = storedKey;
-      showWelcome();
+      loadChatHistory().then(restored => {
+        if (!restored) showWelcome();
+      });
     } else {
       showKeySetup();
     }
@@ -953,6 +1102,24 @@ RULES:
         showWelcome();
       }
     });
+  }
+
+  function saveChatHistory() {
+    const data = JSON.stringify(chatHistory.slice(-20));
+    gmSetValue(HISTORY_KEY, data);
+  }
+
+  async function loadChatHistory() {
+    const raw = await gmGetValue(HISTORY_KEY, localStorage.getItem(HISTORY_KEY) || '[]');
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        chatHistory = parsed;
+        parsed.forEach(msg => addMessage(msg.role, msg.content));
+        return true;
+      }
+    } catch (_) {}
+    return false;
   }
 
   function showWelcome() {
