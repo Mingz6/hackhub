@@ -22,11 +22,6 @@
   console.log('%c[CLōD Navigator] Script loaded on: ' + location.href, 'color: #6c63ff; font-weight: bold; font-size: 14px;');
   document.documentElement.setAttribute('data-clod-navigator-loaded', 'true');
 
-  if (window.top !== window.self) return;
-  if (document.getElementById('clod-nav-sidebar')) return;
-  console.info('[CLōD Navigator] userscript loaded on', location.href);
-  document.documentElement.setAttribute('data-clod-navigator-loaded', 'true');
-
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
   const MODELS = ['DeepSeek V4 Pro', 'DeepSeek V3.2', 'DeepSeek R1'];
@@ -98,57 +93,6 @@
     return String(value).replace(/["\\]/g, '\\$&');
   }
 
-  // ─── GM API Abstraction (classic GM_* + newer GM.* + fallbacks) ──
-  function getGMApi(name) {
-    if (name === 'getValue' && typeof GM_getValue === 'function') return GM_getValue;
-    if (name === 'setValue' && typeof GM_setValue === 'function') return GM_setValue;
-    if (name === 'xmlhttpRequest' && typeof GM_xmlhttpRequest === 'function') return GM_xmlhttpRequest;
-    if (typeof GM !== 'undefined' && GM && typeof GM[name] === 'function') return GM[name].bind(GM);
-    if (name === 'xmlhttpRequest' && typeof GM !== 'undefined' && GM && typeof GM.xmlHttpRequest === 'function') {
-      return GM.xmlHttpRequest.bind(GM);
-    }
-    return null;
-  }
-
-  async function gmGetValue(key, defaultValue) {
-    const getter = getGMApi('getValue');
-    if (!getter) return defaultValue;
-    const value = getter(key, defaultValue);
-    return value && typeof value.then === 'function' ? await value : value;
-  }
-
-  async function gmSetValue(key, value) {
-    const setter = getGMApi('setValue');
-    if (!setter) {
-      localStorage.setItem(key, value);
-      return;
-    }
-    const result = setter(key, value);
-    if (result && typeof result.then === 'function') await result;
-  }
-
-  function gmRequest(details) {
-    return new Promise((resolve, reject) => {
-      const requester = getGMApi('xmlhttpRequest');
-      if (requester) {
-        requester({ ...details, onload: resolve, onerror: reject, ontimeout: reject });
-        return;
-      }
-      // Fallback to fetch (limited by CORS)
-      fetch(details.url, { method: details.method, headers: details.headers, body: details.data })
-        .then(async (response) => resolve({ status: response.status, responseText: await response.text() }))
-        .catch(reject);
-    });
-  }
-
-  // ─── CSS.escape polyfill ─────────────────────────────────────────
-  function escapeCss(value) {
-    if (window.CSS && typeof window.CSS.escape === 'function') {
-      return window.CSS.escape(String(value));
-    }
-    return String(value).replace(/["\\]/g, '\\$&');
-  }
-
   // ─── State ───────────────────────────────────────────────────────
   let apiKey = '';
   let isOpen = true;
@@ -158,6 +102,7 @@
   let overlayEl = null;
   let arrowEl = null;
   let chatHistory = [];
+  let pendingDestinationPromptShown = false;
 
   // ─── Styles ──────────────────────────────────────────────────────
   const STYLES = `
@@ -260,6 +205,31 @@
       color: #ff7d7d;
       font-size: 12px;
       text-align: center;
+    }
+    .clod-msg.card {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .clod-msg-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .clod-msg-action-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .clod-msg-action-btn.primary {
+      background: #6c63ff;
+      color: white;
+    }
+    .clod-msg-action-btn.secondary {
+      background: #374151;
+      color: #f9fafb;
     }
     #clod-nav-input-area {
       padding: 12px;
@@ -427,6 +397,54 @@
     }
     #clod-nav-step-bar.active {
       display: flex;
+    }
+    #clod-nav-destination-prompt {
+      position: fixed;
+      top: 72px;
+      left: 24px;
+      width: 320px;
+      background: rgba(17, 24, 39, 0.96);
+      color: #f9fafb;
+      border: 1px solid rgba(108, 99, 255, 0.45);
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      z-index: 2147483646;
+      padding: 14px;
+      display: none;
+    }
+    #clod-nav-destination-prompt.active {
+      display: block;
+    }
+    #clod-nav-destination-prompt h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    #clod-nav-destination-prompt p {
+      margin: 0 0 12px 0;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #d1d5db;
+    }
+    #clod-nav-destination-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .clod-nav-destination-btn {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .clod-nav-destination-btn.primary {
+      background: #6c63ff;
+      color: white;
+    }
+    .clod-nav-destination-btn.secondary {
+      background: #374151;
+      color: #f9fafb;
     }
     .step-dot {
       width: 8px;
@@ -604,6 +622,16 @@
     };
   }
 
+  async function getPendingGuideData() {
+    const raw = await gmGetValue(PENDING_GUIDE_KEY, '');
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
   function tryLocalClodGuide(userText) {
     const q = userText.toLowerCase();
     const onClod = location.hostname.includes('clod.io');
@@ -684,6 +712,7 @@
     if (!value) return;
     await gmSetValue(PENDING_GUIDE_KEY, JSON.stringify({
       value,
+      originUrl: location.href,
       createdAt: Date.now()
     }));
   }
@@ -703,6 +732,52 @@
     }
   }
 
+  async function clearPendingGuide() {
+    await gmSetValue(PENDING_GUIDE_KEY, '');
+  }
+
+  function removeDestinationChatCard() {
+    document.getElementById('clod-nav-destination-card')?.remove();
+  }
+
+  function waitForAppUiReady() {
+    if (location.hostname !== 'app.clod.io') {
+      return Promise.resolve();
+    }
+
+    const isReady = () => {
+      const apiKeys = findLocalElement(['api keys']);
+      const models = findLocalElement(['models']);
+      return Boolean(apiKeys && models);
+    };
+
+    if (isReady()) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const timeout = setTimeout(() => {
+        observer.disconnect();
+        resolve();
+      }, 15000);
+
+      const observer = new MutationObserver(() => {
+        if (isReady()) {
+          clearTimeout(timeout);
+          observer.disconnect();
+          resolve();
+        }
+      });
+
+      observer.observe(document.documentElement, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true
+      });
+    });
+  }
+
   function resumeGuideByName(name) {
     if (name !== 'api-key') return false;
 
@@ -716,6 +791,55 @@
     addMessage('assistant', result.message);
     if (result.steps.length > 0) startStepGuide(result.steps);
     return true;
+  }
+
+  async function showDestinationChatCard() {
+    removeDestinationChatCard();
+    const pending = await getPendingGuideData();
+
+    const continueGuide = async () => {
+      pendingDestinationPromptShown = false;
+      removeDestinationChatCard();
+      await clearPendingGuide();
+    };
+
+    const goBack = async () => {
+      pendingDestinationPromptShown = false;
+      removeDestinationChatCard();
+      await clearPendingGuide();
+      if (pending?.originUrl) {
+        window.location.href = pending.originUrl;
+      } else {
+        window.history.back();
+      }
+    };
+
+    const card = addMessage('system', 'You are on the CLōD app page. Is this the page you wanted? If yes, continue. If not, go back to the original page.', {
+      cardId: 'clod-nav-destination-card',
+      actions: [
+        { label: 'Yes, continue', kind: 'primary', onClick: continueGuide },
+        { label: 'No, go back', kind: 'secondary', onClick: goBack }
+      ]
+    });
+    card.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }
+
+  async function maybeShowDestinationPrompt() {
+    if (pendingDestinationPromptShown) return;
+    const pending = await getPendingGuideData();
+    if (!pending?.value) return;
+    if (location.hostname !== 'app.clod.io') return;
+
+    await waitForAppUiReady();
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    pendingDestinationPromptShown = true;
+    resumeGuideByName(pending.value);
+    setTimeout(() => {
+      showDestinationChatCard().catch((err) => {
+        console.warn('[CLōD Navigator] Failed to show destination card', err);
+      });
+    }, 900);
   }
 
   // ─── CLōD API Call ───────────────────────────────────────────────
@@ -1022,13 +1146,41 @@ RULES:
   }
 
   // ─── UI Message Handling ─────────────────────────────────────────
-  function addMessage(role, text) {
+  function addMessage(role, text, options = {}) {
     const container = document.getElementById('clod-nav-messages');
     const msg = document.createElement('div');
     msg.className = `clod-msg ${role}`;
+    if (options.cardId) msg.id = options.cardId;
+    if (options.cardId) msg.classList.add('card');
     msg.textContent = text;
+
+    if (Array.isArray(options.actions) && options.actions.length > 0) {
+      const actions = document.createElement('div');
+      actions.className = 'clod-msg-actions';
+
+      for (const action of options.actions) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `clod-msg-action-btn ${action.kind === 'secondary' ? 'secondary' : 'primary'}`;
+        btn.textContent = action.label;
+        btn.addEventListener('click', async () => {
+          btn.disabled = true;
+          try {
+            await action.onClick?.();
+          } finally {
+            btn.disabled = false;
+          }
+        });
+        actions.appendChild(btn);
+      }
+
+      msg.textContent = text;
+      msg.appendChild(actions);
+    }
+
     container.appendChild(msg);
     container.scrollTop = container.scrollHeight;
+    return msg;
   }
 
   async function handleSend() {
@@ -1136,13 +1288,8 @@ RULES:
       showKeySetup();
     }
 
-    setTimeout(() => {
-      consumePendingGuide()
-        .then((pendingGuide) => {
-          if (pendingGuide) resumeGuideByName(pendingGuide);
-        })
-        .catch((err) => console.warn('[CLōD Navigator] Failed to resume pending guide', err));
-    }, 500);
+    maybeShowDestinationPrompt()
+      .catch((err) => console.warn('[CLōD Navigator] Failed to show destination prompt', err));
   }
 
   function showKeySetup() {

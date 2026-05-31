@@ -17,6 +17,7 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 - **Step-by-Step Guarding** — Multi-step operations guided sequentially. Waits for your click before showing the next step.
 - **Positive Feedback** — Confetti celebration on success. Encouragement when things go wrong.
 - **Fast CLōD Rules** — Common CLōD questions are answered locally first, avoiding slow model calls during the demo.
+- **Cross-Page Continuation** — If a CLōD action jumps from `clod.io` to `app.clod.io`, the guide resumes on the next page.
 - **Powered by CLōD API** — Uses CLōD's unified API with DeepSeek V3/model fallback for fast, cheap responses.
 
 ## Demo Flow
@@ -47,7 +48,8 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 3. Sends the page context + user's question to CLōD API only when local rules do not match
 4. AI identifies which element(s) the user needs and returns structured steps
 5. UI spotlights the target element with a dimmed overlay and animated indicators
-6. Listens for user's click, then advances to the next step
+6. If a click causes navigation, the next step is restored on the new page
+7. Listens for user's click, then advances to the next step
 
 ## Team
 
