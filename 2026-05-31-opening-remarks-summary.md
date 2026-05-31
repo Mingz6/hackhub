@@ -119,6 +119,6 @@ Software or hardware welcome. Jen offered hardware mentorship (Raspberry Pi, sma
 - [x] 2-minute format confirmed — matches our demo-prep.md
 - [x] Problem/Demo/Impact structure confirmed
 - [x] Live demo required (not slides/mockup)
-- [x] CLōD = open-source model hosting — our multi-model agent fits perfectly
+- [x] CLōD = open-source model hosting — CLōD Navigator can use CLōD API to understand page context and user intent
 - [ ] Sign up for CLōD $25 credit (via Discord link from George)
-- [ ] Theme alignment: "Your Second Brain" — frame VamAi as research second brain
+- [ ] Theme alignment: "Your Second Brain" — frame CLōD Navigator as a second brain for software onboarding

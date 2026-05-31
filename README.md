@@ -16,7 +16,9 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 - **Spotlight Mode** — Page dims, target element glows with animated ring and bouncing arrow.
 - **Step-by-Step Guarding** — Multi-step operations guided sequentially. Waits for your click before showing the next step.
 - **Positive Feedback** — Confetti celebration on success. Encouragement when things go wrong.
-- **Powered by CLōD API** — Uses DeepSeek V3/model fallback via CLōD's unified API for fast, cheap responses.
+- **Fast CLōD Rules** — Common CLōD questions are answered locally first, avoiding slow model calls during the demo.
+- **Cross-Page Continuation** — If a CLōD action jumps from `clod.io` to `app.clod.io`, the guide resumes on the next page.
+- **Powered by CLōD API** — Uses CLōD's unified API with DeepSeek V3/model fallback for fast, cheap responses.
 
 ## Demo Flow
 
@@ -35,17 +37,19 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 ## Tech Stack
 
 - Vanilla JavaScript (Tampermonkey userscript)
-- CLōD API (OpenAI-compatible, DeepSeek V4 Pro/V3.2/R1 model fallback chain)
+- CLōD API (OpenAI-compatible, DeepSeek V3 with fallback routing)
 - DOM introspection for page context extraction
 - CSS animations for spotlight/confetti effects
 
 ## How It Works
 
 1. Extracts all interactive elements (buttons, inputs, links) from the current page
-2. Sends the page context + user's question to CLōD API
-3. AI identifies which element(s) the user needs and returns structured steps
-4. UI spotlights the target element with a dimmed overlay and animated indicators
-5. Listens for user's click, then advances to the next step
+2. Checks local CLōD-specific rules for common demo questions
+3. Sends the page context + user's question to CLōD API only when local rules do not match
+4. AI identifies which element(s) the user needs and returns structured steps
+5. UI spotlights the target element with a dimmed overlay and animated indicators
+6. If a click causes navigation, the next step is restored on the new page
+7. Listens for user's click, then advances to the next step
 
 ## Team
 
@@ -55,6 +59,7 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 ## Hackathon
 
 Built for the HackHub Hackathon (May 31, 2026). Targeting:
+
 - CLōD Best Use ($500 credit)
 - General Top 3
 
