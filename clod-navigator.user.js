@@ -22,10 +22,81 @@
   console.log('%c[CLōD Navigator] Script loaded on: ' + location.href, 'color: #6c63ff; font-weight: bold; font-size: 14px;');
   document.documentElement.setAttribute('data-clod-navigator-loaded', 'true');
 
+  if (window.top !== window.self) return;
+  if (document.getElementById('clod-nav-sidebar')) return;
+  console.info('[CLōD Navigator] userscript loaded on', location.href);
+  document.documentElement.setAttribute('data-clod-navigator-loaded', 'true');
+
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
   const MODELS = ['DeepSeek V4 Pro', 'DeepSeek V3.2', 'DeepSeek R1'];
   const STORAGE_KEY = 'clod_navigator_api_key';
+  const PENDING_GUIDE_KEY = 'clod_navigator_pending_guide';
+
+  // Tampermonkey exposes GM APIs differently across versions. These wrappers
+  // support both the classic GM_* functions and the newer GM.* Promise APIs.
+  function getGMApi(name) {
+    if (name === 'getValue' && typeof GM_getValue === 'function') return GM_getValue;
+    if (name === 'setValue' && typeof GM_setValue === 'function') return GM_setValue;
+    if (name === 'xmlhttpRequest' && typeof GM_xmlhttpRequest === 'function') return GM_xmlhttpRequest;
+    if (typeof GM !== 'undefined' && GM && typeof GM[name] === 'function') return GM[name].bind(GM);
+    if (name === 'xmlhttpRequest' && typeof GM !== 'undefined' && GM && typeof GM.xmlHttpRequest === 'function') {
+      return GM.xmlHttpRequest.bind(GM);
+    }
+    return null;
+  }
+
+  async function gmGetValue(key, defaultValue) {
+    const getter = getGMApi('getValue');
+    if (!getter) return defaultValue;
+    const value = getter(key, defaultValue);
+    return value && typeof value.then === 'function' ? await value : value;
+  }
+
+  async function gmSetValue(key, value) {
+    const setter = getGMApi('setValue');
+    if (!setter) {
+      localStorage.setItem(key, value);
+      return;
+    }
+    const result = setter(key, value);
+    if (result && typeof result.then === 'function') await result;
+  }
+
+  function gmRequest(details) {
+    return new Promise((resolve, reject) => {
+      const requester = getGMApi('xmlhttpRequest');
+      if (requester) {
+        requester({
+          ...details,
+          onload: resolve,
+          onerror: reject,
+          ontimeout: reject
+        });
+        return;
+      }
+
+      fetch(details.url, {
+        method: details.method,
+        headers: details.headers,
+        body: details.data
+      })
+        .then(async (response) => {
+          resolve({
+            status: response.status,
+            responseText: await response.text()
+          });
+        })
+        .catch(reject);
+    });
+  }
+
+  function escapeCss(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+      return window.CSS.escape(String(value));
+    }
+    return String(value).replace(/["\\]/g, '\\$&');
+  }
 
   // ─── GM API Abstraction (classic GM_* + newer GM.* + fallbacks) ──
   function getGMApi(name) {
@@ -263,7 +334,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.35);
       z-index: 2147483630;
       pointer-events: none;
       opacity: 0;
@@ -276,15 +347,29 @@
       position: fixed;
       border: 3px solid #6c63ff;
       border-radius: 8px;
-      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 30px rgba(108, 99, 255, 0.8);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.42), 0 0 30px rgba(108, 99, 255, 0.9);
       z-index: 2147483635;
       pointer-events: none;
       transition: all 0.4s ease;
       animation: clod-pulse 1.5s infinite;
     }
     @keyframes clod-pulse {
-      0%, 100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 20px rgba(108, 99, 255, 0.6); }
-      50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 40px rgba(108, 99, 255, 1); }
+      0%, 100% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.42), 0 0 20px rgba(108, 99, 255, 0.7); }
+      50% { box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.42), 0 0 40px rgba(108, 99, 255, 1); }
+    }
+    .clod-nav-target-active {
+      background: rgba(255, 255, 255, 0.96) !important;
+      color: #111827 !important;
+      opacity: 1 !important;
+      filter: none !important;
+      box-shadow: 0 0 0 3px #6c63ff, 0 0 24px rgba(108, 99, 255, 0.9) !important;
+      border-radius: 8px !important;
+    }
+    .clod-nav-target-active * {
+      color: #111827 !important;
+      opacity: 1 !important;
+      filter: none !important;
     }
     #clod-nav-arrow {
       position: fixed;
@@ -459,9 +544,184 @@
     return null;
   }
 
-  // ─── CLōD API Call (multi-model fallback) ─────────────────────────
+  function describeElement(el) {
+    if (!el) return null;
+
+    const className = el.className && typeof el.className === 'string'
+      ? el.className.split(' ').filter(c => c.length > 2).slice(0, 3).join('.')
+      : '';
+
+    return {
+      tag: el.tagName.toLowerCase(),
+      id: el.id || undefined,
+      classes: className || undefined,
+      text: (el.textContent || '').trim().slice(0, 80) || undefined,
+      ariaLabel: el.getAttribute('aria-label') || undefined,
+      placeholder: el.getAttribute('placeholder') || undefined,
+      type: el.getAttribute('type') || undefined
+    };
+  }
+
+  function visibleInteractiveElements() {
+    return Array.from(document.querySelectorAll([
+      'button',
+      'a[href]',
+      'input',
+      'textarea',
+      '[role="button"]',
+      '[role="tab"]',
+      '[role="menuitem"]',
+      '[aria-label]'
+    ].join(', '))).filter(el => el.offsetParent || el.tagName === 'INPUT');
+  }
+
+  function findLocalElement(labels) {
+    const normalizedLabels = labels.map(label => label.toLowerCase());
+    return visibleInteractiveElements().find(el => {
+      const haystack = [
+        el.textContent,
+        el.getAttribute('aria-label'),
+        el.getAttribute('placeholder'),
+        el.getAttribute('href'),
+        el.id,
+        typeof el.className === 'string' ? el.className : ''
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      return normalizedLabels.some(label => haystack.includes(label));
+    });
+  }
+
+  function localStep(message, el, explanation, extra = {}) {
+    if (!el) return { message, steps: [] };
+    return {
+      message,
+      steps: [{
+        action: 'click',
+        target: describeElement(el),
+        explanation,
+        ...extra
+      }]
+    };
+  }
+
+  function tryLocalClodGuide(userText) {
+    const q = userText.toLowerCase();
+    const onClod = location.hostname.includes('clod.io');
+    if (!onClod) return null;
+
+    const asksStart = /start|begin|get started|first|where.*click|怎么开始|从哪|开始|第一步/.test(q);
+    const asksApiKey = /api\s*key|apikey|key|token|密钥|钥匙/.test(q);
+    const asksModels = /model|models|deepseek|openai|anthropic|llama|模型/.test(q);
+    const asksDocs = /doc|docs|documentation|api reference|文档|参考/.test(q);
+    const asksPrice = /price|pricing|cost|free|credit|billing|费用|价格|免费|额度/.test(q);
+    const asksEndpoint = /base url|endpoint|api url|request|curl|接口|地址/.test(q);
+
+    if (asksEndpoint) {
+      return {
+        message: 'For CLōD API calls, use base URL https://api.clod.io/v1 and POST /chat/completions. This is OpenAI-compatible.',
+        steps: []
+      };
+    }
+
+    if (asksApiKey) {
+      const el = location.hostname === 'clod.io'
+        ? findLocalElement(['get api key', 'api keys', 'api key'])
+        : findLocalElement(['api keys', 'api key', 'get api key']);
+      const href = el?.getAttribute?.('href') || '';
+      const isPublicSiteGetKey = location.hostname === 'clod.io' && href.includes('app.clod.io');
+
+      return localStep(
+        'You need an API key before calling CLōD. Click the API Keys area or the Get API Key button.',
+        el,
+        'Click here to create or view your CLōD API key.',
+        isPublicSiteGetKey ? {
+          pendingGuide: 'api-key',
+          navigateAfterClick: href
+        } : {}
+      );
+    }
+
+    if (asksModels) {
+      const el = findLocalElement(['models', 'deepseek', 'clōd hosted', 'clod hosted']);
+      return localStep(
+        'For this demo, use a CLōD Hosted model such as DeepSeek. It is the best fit for the CLōD prize track.',
+        el,
+        'Click here to browse available CLōD models.'
+      );
+    }
+
+    if (asksDocs) {
+      const el = findLocalElement(['docs', 'documentation', 'api reference']);
+      return localStep(
+        'The CLōD docs explain the OpenAI-compatible API, model names, routing strategies, and request format.',
+        el,
+        'Open the docs here.'
+      );
+    }
+
+    if (asksPrice) {
+      const el = findLocalElement(['billing', 'free', 'credit', '$']);
+      return localStep(
+        'CLōD offers free credits and daily free requests. Check billing or the credit area for your current balance.',
+        el,
+        'Click here to check credits or billing.'
+      );
+    }
+
+    if (asksStart) {
+      const el = findLocalElement(['get api key', 'api keys', 'models', 'studio', 'projects']);
+      return localStep(
+        'Start by getting an API key, then choose a CLōD Hosted model such as DeepSeek.',
+        el,
+        'This is the best first step on the CLōD site.'
+      );
+    }
+
+    return null;
+  }
+
+  async function savePendingGuide(value) {
+    if (!value) return;
+    await gmSetValue(PENDING_GUIDE_KEY, JSON.stringify({
+      value,
+      createdAt: Date.now()
+    }));
+  }
+
+  async function consumePendingGuide() {
+    const raw = await gmGetValue(PENDING_GUIDE_KEY, '');
+    if (!raw) return null;
+
+    await gmSetValue(PENDING_GUIDE_KEY, '');
+
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed.createdAt || Date.now() - parsed.createdAt > 5 * 60 * 1000) return null;
+      return parsed.value || null;
+    } catch {
+      return null;
+    }
+  }
+
+  function resumeGuideByName(name) {
+    if (name !== 'api-key') return false;
+
+    const el = findLocalElement(['api keys', 'api key', 'get api key', 'key']);
+    const result = localStep(
+      'You are now in the CLōD app. Next, open API Keys to create or copy your key.',
+      el,
+      'Click API Keys here to manage your CLōD API key.'
+    );
+
+    addMessage('assistant', result.message);
+    if (result.steps.length > 0) startStepGuide(result.steps);
+    return true;
+  }
+
+  // ─── CLōD API Call ───────────────────────────────────────────────
   async function callClodAPI(messages) {
     const errors = [];
+
     for (const model of MODELS) {
       try {
         return await callClodModel(model, messages);
@@ -550,7 +810,6 @@ RULES:
 8. JSON property names and string values must use double quotes. Do not use comments, trailing commas, or JavaScript expressions.`;
   }
 
-  // ─── Resilient JSON Parser ────────────────────────────────────────
   function parseAssistantJson(raw) {
     let cleaned = String(raw || '').trim();
 
@@ -565,9 +824,9 @@ RULES:
     }
 
     cleaned = cleaned
-      .replace(/,\s*([}\]])/g, '$1')   // trailing commas
-      .replace(/[\u201c\u201d]/g, '"')  // curly double quotes
-      .replace(/[\u2018\u2019]/g, "'"); // curly single quotes
+      .replace(/,\s*([}\]])/g, '$1')
+      .replace(/[“”]/g, '"')
+      .replace(/[‘’]/g, "'");
 
     try {
       const parsed = JSON.parse(cleaned);
@@ -586,6 +845,9 @@ RULES:
 
   // ─── Process User Message ────────────────────────────────────────
   async function processMessage(userText) {
+    const localResult = tryLocalClodGuide(userText);
+    if (localResult) return localResult;
+
     const pageContext = getPageContext();
     const systemPrompt = getSystemPrompt(pageContext);
 
@@ -609,6 +871,7 @@ RULES:
     const overlay = document.getElementById('clod-nav-overlay');
     if (overlay) overlay.classList.remove('active');
     if (highlightedEl) {
+      highlightedEl.classList.remove('clod-nav-target-active');
       highlightedEl.style.position = '';
       highlightedEl.style.zIndex = '';
       highlightedEl = null;
@@ -642,8 +905,8 @@ RULES:
       // Arrow
       const arrow = document.createElement('div');
       arrow.id = 'clod-nav-arrow';
-      arrow.textContent = '👆';
-      arrow.style.top = `${rect.top - 45}px`;
+      arrow.textContent = '👇';
+      arrow.style.top = `${Math.max(8, rect.top - 48)}px`;
       arrow.style.left = `${rect.left + rect.width / 2 - 16}px`;
       document.body.appendChild(arrow);
 
@@ -658,6 +921,7 @@ RULES:
       }
 
       // Make element clickable above overlay
+      el.classList.add('clod-nav-target-active');
       el.style.position = 'relative';
       el.style.zIndex = '2147483638';
     }, 300);
@@ -713,8 +977,16 @@ RULES:
       spotlightElement(targetEl, step.explanation);
 
       // Listen for the user's click on the target
-      const clickHandler = () => {
+      const clickHandler = async (event) => {
         targetEl.removeEventListener('click', clickHandler);
+
+        if (step.pendingGuide && step.navigateAfterClick) {
+          event.preventDefault();
+          await savePendingGuide(step.pendingGuide);
+          window.location.href = step.navigateAfterClick;
+          return;
+        }
+
         currentStep++;
         updateStepBar();
 
@@ -863,6 +1135,14 @@ RULES:
     } else {
       showKeySetup();
     }
+
+    setTimeout(() => {
+      consumePendingGuide()
+        .then((pendingGuide) => {
+          if (pendingGuide) resumeGuideByName(pendingGuide);
+        })
+        .catch((err) => console.warn('[CLōD Navigator] Failed to resume pending guide', err));
+    }, 500);
   }
 
   function showKeySetup() {
@@ -911,6 +1191,20 @@ RULES:
       document.addEventListener('DOMContentLoaded', startWhenReady, { once: true });
     } else {
       startWhenReady();
+    }
+
+    // Wait for body to exist (Chrome MV3 timing can be different from Safari)
+    if (!document.body) {
+      console.log('[CLōD Navigator] No body yet, setting up MutationObserver...');
+      const observer = new MutationObserver(() => {
+        if (document.body) {
+          observer.disconnect();
+          console.log('[CLōD Navigator] Body appeared via observer, calling buildUI()');
+          buildUI();
+        }
+      });
+      observer.observe(document.documentElement, { childList: true });
+      return;
     }
   }
 
