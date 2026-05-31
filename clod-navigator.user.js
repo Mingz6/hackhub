@@ -11,6 +11,7 @@
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
+// @grant        unsafeWindow
 // @connect      api.clod.io
 // ==/UserScript==
 
@@ -331,6 +332,91 @@
       max-width: 260px;
       pointer-events: none;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    /* ─── Welcome Effect ─── */
+    #clod-welcome-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(10, 10, 25, 0.72);
+      z-index: 2147483628;
+      overflow: hidden;
+      pointer-events: auto;
+      animation: clod-welcome-in 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    @keyframes clod-welcome-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    #clod-welcome-sheen {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        108deg,
+        transparent 20%,
+        rgba(192, 210, 255, 0.04) 36%,
+        rgba(220, 232, 255, 0.11) 46%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(220, 232, 255, 0.11) 54%,
+        rgba(192, 210, 255, 0.04) 64%,
+        transparent 80%
+      );
+      transform: translateX(-100%);
+      animation: clod-sheen-sweep 2.6s cubic-bezier(0.4, 0, 0.2, 1) 0.35s forwards;
+    }
+    @keyframes clod-sheen-sweep {
+      from { transform: translateX(-100%); }
+      to   { transform: translateX(220%); }
+    }
+    .clod-welcome-orb {
+      position: absolute;
+      left: -40px;
+      color: rgba(210, 225, 255, 0.78);
+      pointer-events: none;
+      filter: drop-shadow(0 0 4px rgba(180, 205, 255, 0.65));
+      animation: clod-orb-flow linear forwards;
+    }
+    @keyframes clod-orb-flow {
+      0%   { transform: translateX(0)      translateY(0px);    opacity: 0; }
+      7%   { opacity: 1; }
+      28%  { transform: translateX(28vw)   translateY(-13px); }
+      52%  { transform: translateX(52vw)   translateY(9px);  }
+      76%  { transform: translateX(76vw)   translateY(-7px); }
+      93%  { opacity: 0.75; }
+      100% { transform: translateX(112vw)  translateY(0px);    opacity: 0; }
+    }
+    #clod-welcome-sidebar-glow {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 368px;
+      height: 100vh;
+      z-index: 2147483629;
+      pointer-events: none;
+      box-shadow: -10px 0 50px rgba(108, 99, 255, 0.55),
+                  inset 0 0 40px rgba(108, 99, 255, 0.18);
+      animation: clod-sidebar-pulse 2s ease-in-out infinite;
+    }
+    @keyframes clod-sidebar-pulse {
+      0%, 100% { box-shadow: -10px 0 50px rgba(108, 99, 255, 0.55), inset 0 0 40px rgba(108, 99, 255, 0.18); }
+      50%       { box-shadow: -14px 0 70px rgba(108, 99, 255, 0.85), inset 0 0 60px rgba(108, 99, 255, 0.30); }
+    }
+    #clod-welcome-logo {
+      position: absolute;
+      top: 50%;
+      left: calc(50% - 220px);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      opacity: 0;
+      filter: drop-shadow(0 0 24px rgba(108, 99, 255, 0.7))
+              drop-shadow(0 0 60px rgba(108, 99, 255, 0.3));
+      animation: clod-logo-appear 1s cubic-bezier(0.4, 0, 0.2, 1) 1s forwards;
+    }
+    @keyframes clod-logo-appear {
+      from { opacity: 0; transform: translate(-50%, -42%) scale(0.92); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
     /* Confetti */
     .clod-confetti {
@@ -1077,6 +1163,8 @@ RULES:
     gmGetValue(STORAGE_KEY, localStorage.getItem(STORAGE_KEY) || '')
       .then(loadKey)
       .catch(() => loadKey(localStorage.getItem(STORAGE_KEY) || ''));
+
+    showWelcomeEffect();
   }
 
   function loadKey(storedKey) {
@@ -1133,6 +1221,110 @@ RULES:
   function showWelcome() {
     addMessage('assistant', "Hi! 👋 I'm your CLōD Navigator. I can help you find any button, input, or feature on this page. Just describe what you want to do in plain language!");
     addMessage('system', '💡 Try: "How do I start?" or "Where do I put my API key?"');
+  }
+
+  // ─── Welcome Effect ──────────────────────────────────────────────
+  const WELCOME_SEEN_KEY = 'clod_navigator_welcomed';
+
+  function showWelcomeEffect() {
+    // Debug helper: call window.__clodResetWelcome() in DevTools to replay the effect
+    // Full reset (clears storage + reloads) — for permanent reset
+    unsafeWindow.__clodResetWelcome = () =>
+      gmSetValue(WELCOME_SEEN_KEY, '').then(() => {
+        sessionStorage.setItem('clod_nav_test_delay', '1');
+        location.reload();
+      });
+
+    // Instant replay without reload — for demos: call __clodPreviewWelcome() or press Alt+Shift+W
+    unsafeWindow.__clodPreviewWelcome = _runWelcomeEffect;
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey && e.shiftKey && e.code === 'KeyW') _runWelcomeEffect();
+    });
+
+    const delay = sessionStorage.getItem('clod_nav_test_delay') ? 1500 : 0;
+    sessionStorage.removeItem('clod_nav_test_delay');
+
+    gmGetValue(WELCOME_SEEN_KEY, '')
+      .then(seen => { if (!seen) setTimeout(_runWelcomeEffect, delay); })
+      .catch(() => { if (!localStorage.getItem(WELCOME_SEEN_KEY)) setTimeout(_runWelcomeEffect, delay); });
+  }
+
+  function _runWelcomeEffect() {
+    gmSetValue(WELCOME_SEEN_KEY, '1').catch(() => localStorage.setItem(WELCOME_SEEN_KEY, '1'));
+
+    const overlay = document.createElement('div');
+    overlay.id = 'clod-welcome-overlay';
+
+    const sheen = document.createElement('div');
+    sheen.id = 'clod-welcome-sheen';
+    overlay.appendChild(sheen);
+
+    const symbols = ['•', '◇', '✦', '◦', '✧', '◈', '⊙', '∘'];
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+      const orb = document.createElement('div');
+      orb.className = 'clod-welcome-orb';
+      orb.textContent = symbols[i % symbols.length];
+      orb.style.top = `${4 + (i / count) * 92}%`;
+      orb.style.fontSize = `${9 + (i % 4) * 6}px`;
+      orb.style.animationDelay = `${(i / count) * 2.4}s`;
+      orb.style.animationDuration = `${2.4 + (i % 5) * 0.4}s`;
+      overlay.appendChild(orb);
+    }
+
+    const logo = document.createElement('div');
+    logo.id = 'clod-welcome-logo';
+    logo.innerHTML = `<svg width="440" height="290" viewBox="0 0 440 290" xmlns="http://www.w3.org/2000/svg">
+      <!-- Cloud body -->
+      <ellipse cx="220" cy="205" rx="182" ry="72" fill="white"/>
+      <!-- Left side bump -->
+      <circle cx="58"  cy="198" r="64" fill="white"/>
+      <!-- Right side bump -->
+      <circle cx="382" cy="198" r="64" fill="white"/>
+      <!-- Top-left large bump -->
+      <circle cx="148" cy="128" r="84" fill="white"/>
+      <!-- Top-right large bump -->
+      <circle cx="292" cy="112" r="90" fill="white"/>
+      <!-- Bottom centre fill -->
+      <circle cx="220" cy="248" r="52" fill="white"/>
+      <!-- Text -->
+      <text x="222" y="130" text-anchor="middle" dominant-baseline="middle"
+        font-family="Georgia,'Times New Roman',serif"
+        font-weight="700" font-style="italic" font-size="66" fill="#0d0d1a">Chat</text>
+      <text x="222" y="196" text-anchor="middle" dominant-baseline="middle"
+        font-family="Georgia,'Times New Roman',serif"
+        font-weight="700" font-style="italic" font-size="66" fill="#0d0d1a">WithMe</text>
+    </svg>`;
+    overlay.appendChild(logo);
+
+    document.body.appendChild(overlay);
+
+    const glow = document.createElement('div');
+    glow.id = 'clod-welcome-sidebar-glow';
+    document.body.appendChild(glow);
+
+    const logoFadeTimer = setTimeout(() => {
+      logo.style.animation = 'none';         // cancel forwards-fill so inline styles take effect
+      logo.style.transition = 'none';
+      logo.style.opacity = '1';              // lock in visible state
+      logo.getBoundingClientRect();          // force reflow
+      logo.style.transition = 'opacity 0.5s cubic-bezier(0.4,0,0.2,1)';
+      logo.style.opacity = '0';
+    }, 3700);
+
+    function dismiss() {
+      overlay.removeEventListener('click', dismiss);
+      clearTimeout(autoTimer);
+      clearTimeout(logoFadeTimer);
+      overlay.style.transition = 'opacity 0.85s cubic-bezier(0.4,0,0.2,1)';
+      overlay.style.opacity = '0';
+      glow.style.transition = 'opacity 0.85s cubic-bezier(0.4,0,0.2,1)';
+      glow.style.opacity = '0';
+      setTimeout(() => { overlay.remove(); glow.remove(); }, 860);
+    }
+
+    overlay.addEventListener('click', dismiss);
+    const autoTimer = setTimeout(dismiss, 4200);
   }
 
   // ─── Initialize ──────────────────────────────────────────────────
