@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.4
+// @version      1.0.5
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        *://*/*
@@ -624,6 +624,17 @@ RULES:
     if (!el) return;
 
     highlightedEl = el;
+
+    // Auto-collapse sidebar so the spotlight isn't hidden behind it
+    if (isOpen) {
+      const sidebar = document.getElementById('clod-nav-sidebar');
+      const toggle = document.getElementById('clod-nav-toggle');
+      isOpen = false;
+      sidebar.classList.add('collapsed');
+      toggle.classList.add('collapsed');
+      toggle.textContent = '▶';
+    }
+
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     setTimeout(() => {
@@ -707,6 +718,15 @@ RULES:
       document.getElementById('clod-nav-step-bar').classList.remove('active');
       steps = [];
       currentStep = 0;
+      // Re-expand sidebar
+      if (!isOpen) {
+        const sidebar = document.getElementById('clod-nav-sidebar');
+        const toggle = document.getElementById('clod-nav-toggle');
+        isOpen = true;
+        sidebar.classList.remove('collapsed');
+        toggle.classList.remove('collapsed');
+        toggle.textContent = '◀';
+      }
       return;
     }
 
@@ -721,6 +741,16 @@ RULES:
         targetEl.removeEventListener('click', clickHandler);
         currentStep++;
         updateStepBar();
+
+        // Re-expand sidebar after click
+        if (!isOpen) {
+          const sidebar = document.getElementById('clod-nav-sidebar');
+          const toggle = document.getElementById('clod-nav-toggle');
+          isOpen = true;
+          sidebar.classList.remove('collapsed');
+          toggle.classList.remove('collapsed');
+          toggle.textContent = '◀';
+        }
 
         if (currentStep < steps.length) {
           addMessage('system', `✅ Step ${currentStep} done! Moving to next...`);
