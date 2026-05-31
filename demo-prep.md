@@ -1,163 +1,197 @@
-# Hackathon Demo Prep — Vibe Coding Hackathon Vancouver
+# Hackathon Demo Prep - Vibe Coding Hackathon Vancouver
 
 **Date:** May 31, 2026  
 **Submission:** 4:00 PM  
-**Target Prize:** CLōD Best Use ($500 credit) + General Top 3  
+**Theme:** Your Second Brain  
+**Project:** CLōD Navigator  
+
+---
+
+## Current Direction
+
+We are discarding the earlier React/web-app discussion. The MVP is a Tampermonkey userscript that behaves like a lightweight browser plugin.
+
+The goal is to prove the core interaction quickly:
+
+> A beginner asks what to do, and the current webpage visually points to the exact place they should click.
+
+This keeps the build focused on a real demo instead of a full extension release process.
+
+---
+
+## Theme Fit: Your Second Brain
+
+The event theme is to build AI that helps people remember, learn, reason, and act with knowledge they already have.
+
+CLōD Navigator fits the theme as an action layer for learning unfamiliar tools:
+
+- It helps beginners learn complex software interfaces in context
+- It remembers common beginner questions and maps them to UI actions
+- It helps users reason less about confusing page layouts and act faster
+- It turns documentation-style knowledge into real-time visual guidance
+
+Instead of asking users to read instructions, the product shows the next action directly on the page.
 
 ---
 
 ## The 3 Demo Points
 
-### 1. PROBLEM
+### 1. Problem
 
-**"One AI model = one perspective. You're making decisions based on a single opinion."**
+**Beginners do not fail because AI tools are impossible. They fail because the first screen is confusing.**
 
-When you ask ChatGPT or Claude a question, you get ONE answer from ONE model. But different models have different strengths — Claude is better at reasoning, GPT at creativity, Llama at speed, Gemini at multimodal. For any important decision (research, analysis, technical design), relying on a single model is like asking one doctor when you should get a second opinion.
+Complex AI tools have sidebars, settings, API keys, input boxes, model selectors, and unfamiliar English labels. A non-technical user may give up before they even type the first prompt.
 
-**Demo hook:** "Would you trust one Google result? Then why trust one AI answer?"
+**Demo hook:** "Chatbots tell you what to do. CLōD Navigator shows you where to click."
 
----
+### 2. Demo
 
-### 2. DEMO
+**CLōD Navigator**
 
-**Multi-Model Research Agent — "AI Jury"**
+A Tampermonkey-powered browser guide that injects a small assistant sidebar into an existing webpage. The user asks a plain-language question, and the page highlights the correct button, input, or setting.
 
-A web app that takes your question, queries 3-4 models simultaneously via CLōD's unified API, then synthesizes a consensus answer highlighting where models agree and disagree.
+**Live demo flow, 90 seconds:**
 
-**Live demo flow (90 seconds):**
-1. Type a question (e.g., "What's the best Python web framework for a startup MVP in 2026?")
-2. Show the query fanning out to 3+ models (Claude, GPT, Llama) via CLōD
-3. Each model's response appears in its own card (side-by-side)
-4. A synthesis agent (also via CLōD) produces a "consensus" summary
-5. Highlight disagreements — "Claude says FastAPI, GPT says Next.js, Llama agrees with Claude"
+1. Open the target AI coding page.
+2. Show that the page looks confusing for a beginner.
+3. Type: "I do not know where to start."
+4. The page darkens and the correct input or start button is spotlighted.
+5. Show the short instruction: "Start here."
+6. Click the highlighted target.
+7. Show positive feedback and, if available, the next step.
 
 **What judges see:**
-- Real CLōD API calls (Platform Usage: 40% — this is 4+ calls per query, multiple models)
-- Novel concept of "AI diversity" (Creativity: 25%)
-- Clean code, working web UI (Technical Execution: 20%)
-- Smooth live demo (Project Demo: 15%)
+
+- Real injected browser behavior through Tampermonkey
+- A clear before/after contrast on the same webpage
+- Visual guidance instead of text-only explanation
+- A beginner-friendly workflow that can generalize to SaaS onboarding
+
+### 3. Impact
+
+**CLōD Navigator makes complex tools feel usable in the first minute.**
+
+- **For beginners:** Know exactly where to click next
+- **For AI tools:** Improve new-user activation
+- **For SaaS companies:** Reduce onboarding friction and support tickets
+- **For education:** Turn tutorials into live, contextual guidance
+
+**One-liner:** "It is a second brain for software onboarding: ask what to do, and the page points the way."
 
 ---
 
-### 3. IMPACT
+## Judging Criteria Fit
 
-**"Better decisions through AI diversity."**
-
-- **For researchers:** Get balanced perspectives instead of one model's bias
-- **For developers:** Compare model outputs for code review, architecture decisions
-- **For founders:** Validate ideas against multiple AI "advisors" before committing
-- **Cost angle:** CLōD makes this affordable — one API key, 50+ models, up to 60% cheaper than going direct
-
-**One-liner:** "It's like getting a second opinion — except you get five, instantly, for pennies."
-
----
-
-## Why This Wins CLōD Prize
-
-| Criteria (Weight) | How We Score |
+| Criteria | How We Address It |
 |---|---|
-| Platform Usage (40%) | Multiple models called per query. Shows CLōD's unique multi-model value prop. Not just one model — the whole point IS using many models. |
-| Creativity (25%) | "AI Jury" / consensus pattern is novel. Most projects just call one model. |
-| Technical Execution (20%) | Async parallel calls, streaming responses, clean UI. Built on proven pattern (DeepResearchAiMin). |
-| Project Demo (15%) | Live query → visual multi-model comparison → synthesis. High visual impact. |
+| Innovation | Visual, in-page guidance is more direct than a normal chatbot response. |
+| Technical Execution | Tampermonkey script injects UI, scans page elements, matches intent, and renders overlays. |
+| Usability | Designed for non-technical beginners with short instructions and one highlighted action at a time. |
+| Problem Relevance | Helps people learn and act with unfamiliar AI tools, matching the "second brain" theme. |
+| Bonus: Go-to-Market | Can become an onboarding layer for SaaS, AI tools, education platforms, and enterprise dashboards. |
 
 ---
 
-## Build Plan (5 hours)
+## Technical Stack
+
+```text
+Runtime:    Tampermonkey userscript
+Language:   Plain JavaScript
+UI:         Injected HTML/CSS sidebar and overlay
+Matching:   Keyword/rule-based intent matching for the MVP
+Storage:    Optional local userscript state only
+Deploy:     Local Tampermonkey install for live demo
+```
+
+No React app is required for this version. No Chrome Web Store publishing is required.
+
+---
+
+## Build Plan
 
 | Time | Task | Deliverable |
 |------|------|-------------|
-| 10:30–11:00 | Set up CLōD API key, test 3 models work | `test_clod.py` passes |
-| 11:00–12:00 | Backend: FastAPI + async multi-model query | `/api/research` endpoint works |
-| 12:00–12:30 | Lunch (let ideas settle) | — |
-| 12:30–14:00 | Frontend: React/HTML showing model cards + synthesis | UI renders results |
-| 14:00–15:00 | Synthesis agent + polish (streaming, error handling) | End-to-end works |
-| 15:00–15:30 | Demo script rehearsal, record backup video | Ready to present |
-| 15:30–16:00 | Submit + buffer | Submitted |
+| 10:30-11:00 | Pick target page and key user flows | Demo target locked |
+| 11:00-12:00 | Create Tampermonkey userscript shell | Script runs on target page |
+| 12:00-12:30 | Build right-side assistant sidebar | User can type a request |
+| 12:30-14:00 | Implement element detection and intent matching | Start/type/run/API-key flows work |
+| 14:00-15:00 | Add overlay, spotlight, arrow, and click feedback | Main wow moment works |
+| 15:00-15:30 | Rehearse two-minute pitch and record backup | Ready to present |
+| 15:30-16:00 | Submit project and keep buffer | Submitted before 4:00 PM |
 
 ---
 
-## Tech Stack
+## MVP Flows
 
-```
-Frontend:  HTML + Tailwind (or simple React if time allows)
-Backend:   Python FastAPI (or Flask — you know Flask from DeepResearchAiMin)
-LLM:       CLōD API (OpenAI-compatible endpoint)
-Models:    3-4 from CLōD (e.g., claude-sonnet, gpt-4o, llama-3, gemini)
-Deploy:    Local demo (no deploy needed for hackathon)
-```
+### Flow 1: Start
 
----
+User says:
 
-## CLōD API Quick Start
+> I do not know where to start.
 
-```python
-import httpx
-import asyncio
+Guide:
 
-CLOD_API_KEY = "your_clod_key"  # $20 free credits
-CLOD_BASE_URL = "https://api.clod.io/v1"  # Check docs: clod.io/docs
+1. Highlight the main prompt input or start button.
+2. Show: "Start here."
+3. Confirm when the user clicks or types.
 
-MODELS = [
-    "claude-sonnet-4-20250514",
-    "gpt-4o",
-    "meta-llama/llama-3-70b",
-]
+### Flow 2: Type A Request
 
-async def query_model(client, model, question):
-    response = await client.post(
-        f"{CLOD_BASE_URL}/chat/completions",
-        headers={"Authorization": f"Bearer {CLOD_API_KEY}"},
-        json={
-            "model": model,
-            "messages": [{"role": "user", "content": question}],
-        },
-    )
-    data = response.json()
-    return {"model": model, "answer": data["choices"][0]["message"]["content"]}
+User says:
 
-async def multi_model_research(question):
-    async with httpx.AsyncClient(timeout=30) as client:
-        tasks = [query_model(client, m, question) for m in MODELS]
-        results = await asyncio.gather(*tasks)
-    return results
-```
+> Where do I type what I want?
 
----
+Guide:
 
-## Demo Script (What to Say)
+1. Highlight the main text area or prompt input.
+2. Show: "Type your request here."
 
-> "Hi, I'm Ming. I built **[Project Name]** — a multi-model research agent powered by CLōD."
->
-> **PROBLEM:** "When you ask AI a question, you get one answer from one model. But different models think differently. That's like asking one person and calling it research."
->
-> **DEMO:** "Watch — I type a question, and it queries Claude, GPT-4o, and Llama simultaneously through CLōD's unified API. Each model answers in its own card. Then a synthesis agent compares them and tells me where they agree and disagree."
->
-> *[Live demo: type question, show results]*
->
-> **IMPACT:** "Better decisions through AI diversity. And CLōD makes it affordable — one API, fifty models, fraction of the cost. This is the future of how we use AI: not one model, but many."
+### Flow 3: Run
+
+User says:
+
+> How do I run it?
+
+Guide:
+
+1. Highlight the run, submit, send, or start button.
+2. Show: "Click this button to run your request."
+
+### Flow 4: API Key
+
+User says:
+
+> Where do I put the API key?
+
+Guide:
+
+1. Highlight an API key field if visible.
+2. Otherwise highlight settings, account, developer, or API navigation.
+3. Show: "An API key is like a password for connecting to an AI service. Paste it here."
 
 ---
 
-## Alternate Project Ideas (If Theme Doesn't Fit)
+## Demo Script
 
-If the announced theme steers away from research tools, adapt the same multi-model architecture:
-
-1. **AI Code Reviewer** — paste code, 3 models review it, synthesis highlights consensus bugs
-2. **Startup Idea Validator** — describe idea, models play investor/customer/critic roles
-3. **Study Buddy** — ask a study question, get explanations at different difficulty levels from different models
-4. **AI Debate Club** — pick a topic, models argue different sides, you watch the debate
-
-All of these use the same backend (parallel CLōD calls + synthesis). Just swap the prompts.
+> "Hi, I'm Ming. I built CLōD Navigator, a Tampermonkey-powered browser guide for AI beginners."
+>
+> **Problem:** "Many people want to try AI tools, but they get stuck on the first screen because they do not know what to click."
+>
+> **Demo:** "Instead of explaining in a paragraph, CLōD Navigator points directly on the page. I type 'I do not know where to start,' and the page highlights the exact input or button I should use."
+>
+> **Impact:** "This can become an onboarding layer for AI tools and SaaS products. It helps users learn and act immediately, which fits today's theme: your second brain."
 
 ---
 
 ## Pre-Demo Checklist
 
-- [ ] CLōD API key set up and working
-- [ ] At least 3 models responding
-- [ ] Web UI loads and shows results
-- [ ] Synthesis/consensus step works
-- [ ] Demo question prepared (something impressive)
-- [ ] Backup: screen recording of working demo in case live fails
-- [ ] Project submitted on platform before 4:00 PM
+- [ ] Tampermonkey installed
+- [ ] Userscript installed and enabled
+- [ ] Target page selected
+- [ ] Sidebar appears on target page
+- [ ] At least three beginner intents work
+- [ ] Spotlight and arrow are visually clear
+- [ ] Click feedback works
+- [ ] Two-minute pitch rehearsed
+- [ ] Backup screen recording prepared
+- [ ] Project submitted before 4:00 PM

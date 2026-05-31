@@ -16,7 +16,7 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 - **Spotlight Mode** — Page dims, target element glows with animated ring and bouncing arrow.
 - **Step-by-Step Guarding** — Multi-step operations guided sequentially. Waits for your click before showing the next step.
 - **Positive Feedback** — Confetti celebration on success. Encouragement when things go wrong.
-- **Powered by CLōD API** — Uses DeepSeek V3 via CLōD's unified API for fast, cheap responses.
+- **Powered by CLōD API** — Uses DeepSeek V3/model fallback via CLōD's unified API for fast, cheap responses.
 
 ## Demo Flow
 
@@ -35,7 +35,7 @@ CLōD Navigator is a floating sidebar that lets beginners ask questions in plain
 ## Tech Stack
 
 - Vanilla JavaScript (Tampermonkey userscript)
-- CLōD API (OpenAI-compatible, DeepSeek V3 model via `@latency` routing)
+- CLōD API (OpenAI-compatible, DeepSeek V4 Pro/V3.2/R1 model fallback chain)
 - DOM introspection for page context extraction
 - CSS animations for spotlight/confetti effects
 

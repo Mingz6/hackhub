@@ -1,34 +1,82 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.2
+// @version      1.0.3
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
-// @match        https://app.clod.io/*
-// @match        https://clod.io/*
-// @match        https://*.clod.io/*
+// @match        *://*/*
+// @include      *
+// @run-at       document-idle
+// @noframes
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
 // @connect      api.clod.io
-// @connect      clod.io
-// @run-at       document-idle
-// @noframes
 // ==/UserScript==
 
 (function () {
   'use strict';
+
+  if (window.top !== window.self) return;
+  if (document.getElementById('clod-nav-sidebar')) return;
   console.log('%c[CLōD Navigator] Script loaded on: ' + location.href, 'color: #6c63ff; font-weight: bold; font-size: 14px;');
-  console.log('[CLōD Navigator] Tampermonkey GM APIs available:', {
-    GM_getValue: typeof GM_getValue,
-    GM_setValue: typeof GM_setValue,
-    GM_xmlhttpRequest: typeof GM_xmlhttpRequest
-  });
+  document.documentElement.setAttribute('data-clod-navigator-loaded', 'true');
 
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
-  const MODEL = 'gpt-4o-mini';
+  const MODELS = ['DeepSeek V4 Pro', 'DeepSeek V3.2', 'DeepSeek R1'];
   const STORAGE_KEY = 'clod_navigator_api_key';
+
+  // ─── GM API Abstraction (classic GM_* + newer GM.* + fallbacks) ──
+  function getGMApi(name) {
+    if (name === 'getValue' && typeof GM_getValue === 'function') return GM_getValue;
+    if (name === 'setValue' && typeof GM_setValue === 'function') return GM_setValue;
+    if (name === 'xmlhttpRequest' && typeof GM_xmlhttpRequest === 'function') return GM_xmlhttpRequest;
+    if (typeof GM !== 'undefined' && GM && typeof GM[name] === 'function') return GM[name].bind(GM);
+    if (name === 'xmlhttpRequest' && typeof GM !== 'undefined' && GM && typeof GM.xmlHttpRequest === 'function') {
+      return GM.xmlHttpRequest.bind(GM);
+    }
+    return null;
+  }
+
+  async function gmGetValue(key, defaultValue) {
+    const getter = getGMApi('getValue');
+    if (!getter) return defaultValue;
+    const value = getter(key, defaultValue);
+    return value && typeof value.then === 'function' ? await value : value;
+  }
+
+  async function gmSetValue(key, value) {
+    const setter = getGMApi('setValue');
+    if (!setter) {
+      localStorage.setItem(key, value);
+      return;
+    }
+    const result = setter(key, value);
+    if (result && typeof result.then === 'function') await result;
+  }
+
+  function gmRequest(details) {
+    return new Promise((resolve, reject) => {
+      const requester = getGMApi('xmlhttpRequest');
+      if (requester) {
+        requester({ ...details, onload: resolve, onerror: reject, ontimeout: reject });
+        return;
+      }
+      // Fallback to fetch (limited by CORS)
+      fetch(details.url, { method: details.method, headers: details.headers, body: details.data })
+        .then(async (response) => resolve({ status: response.status, responseText: await response.text() }))
+        .catch(reject);
+    });
+  }
+
+  // ─── CSS.escape polyfill ─────────────────────────────────────────
+  function escapeCss(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') {
+      return window.CSS.escape(String(value));
+    }
+    return String(value).replace(/["\\]/g, '\\$&');
+  }
 
   // ─── State ───────────────────────────────────────────────────────
   let apiKey = '';
@@ -350,8 +398,8 @@
       };
       // Build a CSS selector for this element
       let selector = tag;
-      if (id) selector = `#${CSS.escape(id)}`;
-      else if (ariaLabel) selector = `${tag}[aria-label="${CSS.escape(ariaLabel)}"]`;
+      if (id) selector = `#${escapeCss(id)}`;
+      else if (ariaLabel) selector = `${tag}[aria-label="${escapeCss(ariaLabel)}"]`;
       else if (text && text.length < 40) selector = `${tag}:has-text("${text.slice(0, 30)}")`;
       else if (classes) selector = `${tag}.${classes.split('.')[0]}`;
 
@@ -369,12 +417,12 @@
 
   // ─── Build selector that actually works with querySelector ───────
   function buildQuerySelector(el) {
-    if (el.id) return `#${CSS.escape(el.id)}`;
+    if (el.id) return `#${escapeCss(el.id)}`;
     if (el.ariaLabel) return `${el.tag}[aria-label="${el.ariaLabel}"]`;
     if (el.placeholder) return `${el.tag}[placeholder="${el.placeholder}"]`;
     if (el.classes) {
       const cls = el.classes.split('.')[0];
-      if (cls) return `${el.tag}.${CSS.escape(cls)}`;
+      if (cls) return `${el.tag}.${escapeCss(cls)}`;
     }
     // Fallback: tag + text content match via iteration
     return null;
@@ -387,11 +435,11 @@
       if (el) return el;
     }
     if (desc.ariaLabel) {
-      const el = document.querySelector(`[aria-label="${CSS.escape(desc.ariaLabel)}"]`);
+      const el = document.querySelector(`[aria-label="${escapeCss(desc.ariaLabel)}"]`);
       if (el) return el;
     }
     if (desc.placeholder) {
-      const el = document.querySelector(`[placeholder="${CSS.escape(desc.placeholder)}"]`);
+      const el = document.querySelector(`[placeholder="${escapeCss(desc.placeholder)}"]`);
       if (el) return el;
     }
     // Text content match
@@ -405,16 +453,29 @@
     // Class match
     if (desc.classes) {
       const cls = desc.classes.split('.')[0];
-      const el = document.querySelector(`.${CSS.escape(cls)}`);
+      const el = document.querySelector(`.${escapeCss(cls)}`);
       if (el) return el;
     }
     return null;
   }
 
-  // ─── CLōD API Call ───────────────────────────────────────────────
-  function callClodAPI(messages) {
+  // ─── CLōD API Call (multi-model fallback) ─────────────────────────
+  async function callClodAPI(messages) {
+    const errors = [];
+    for (const model of MODELS) {
+      try {
+        return await callClodModel(model, messages);
+      } catch (err) {
+        errors.push(`${model}: ${err.message}`);
+        if (!err.message.includes('404')) throw err;
+      }
+    }
+    throw new Error(`No configured CLōD model is available. Tried: ${errors.join(' | ')}`);
+  }
+
+  function callClodModel(model, messages) {
     return new Promise((resolve, reject) => {
-      GM_xmlhttpRequest({
+      gmRequest({
         method: 'POST',
         url: CLOD_API_URL,
         headers: {
@@ -422,12 +483,13 @@
           'Content-Type': 'application/json'
         },
         data: JSON.stringify({
-          model: MODEL,
+          model,
           messages: messages,
           temperature: 0.3,
           max_completion_tokens: 1200
         }),
-        onload: (response) => {
+      })
+        .then((response) => {
           if (response.status >= 200 && response.status < 300) {
             try {
               const data = JSON.parse(response.responseText);
@@ -438,9 +500,8 @@
           } else {
             reject(new Error(`API error ${response.status}: ${response.responseText?.slice(0, 200)}`));
           }
-        },
-        onerror: (err) => reject(new Error('Network error calling CLōD API'))
-      });
+        })
+        .catch(() => reject(new Error('Network error calling CLōD API')));
     });
   }
 
@@ -463,8 +524,15 @@ RESPONSE FORMAT — You MUST respond in valid JSON (no markdown, no backticks):
   "message": "Your friendly explanation to the user (1-3 sentences, encouraging tone)",
   "steps": [
     {
-      "action": "click" | "type" | "look",
-      "target": { exact element descriptor from the list above — include id, ariaLabel, text, classes, tag },
+      "action": "click",
+      "target": {
+        "tag": "button",
+        "text": "Get API Key",
+        "ariaLabel": "",
+        "placeholder": "",
+        "id": "",
+        "classes": ""
+      },
       "value": "text to type (only for 'type' action)",
       "explanation": "Why this step (short, beginner-friendly)"
     }
@@ -478,7 +546,42 @@ RULES:
 4. Keep explanations warm and encouraging — like a patient friend helping a beginner.
 5. For multi-step tasks, list steps in order. The UI will guide one step at a time.
 6. If the user says something like "I did it!" or confirms a step, congratulate them.
-7. For greetings or "how do I start?", point them to the most logical first action on the page.`;
+7. For greetings or "how do I start?", point them to the most logical first action on the page.
+8. JSON property names and string values must use double quotes. Do not use comments, trailing commas, or JavaScript expressions.`;
+  }
+
+  // ─── Resilient JSON Parser ────────────────────────────────────────
+  function parseAssistantJson(raw) {
+    let cleaned = String(raw || '').trim();
+
+    if (cleaned.startsWith('```')) {
+      cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+    }
+
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+      cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+    }
+
+    cleaned = cleaned
+      .replace(/,\s*([}\]])/g, '$1')   // trailing commas
+      .replace(/[\u201c\u201d]/g, '"')  // curly double quotes
+      .replace(/[\u2018\u2019]/g, "'"); // curly single quotes
+
+    try {
+      const parsed = JSON.parse(cleaned);
+      return {
+        message: typeof parsed.message === 'string' ? parsed.message : 'I found a possible next step.',
+        steps: Array.isArray(parsed.steps) ? parsed.steps : []
+      };
+    } catch (err) {
+      console.warn('[CLōD Navigator] Could not parse model JSON:', raw, err);
+      return {
+        message: cleaned.slice(0, 500) || 'I received a response, but could not turn it into page guidance. Try asking with simpler words like "where do I start?"',
+        steps: []
+      };
+    }
   }
 
   // ─── Process User Message ────────────────────────────────────────
@@ -495,15 +598,7 @@ RULES:
     ];
 
     const raw = await callClodAPI(messages);
-
-    // Parse JSON response (strip markdown fences if model adds them)
-    let cleaned = raw.trim();
-    if (cleaned.startsWith('```')) {
-      cleaned = cleaned.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '');
-    }
-
-    const parsed = JSON.parse(cleaned);
-    return parsed;
+    return parseAssistantJson(raw);
   }
 
   // ─── Spotlight & Highlight ───────────────────────────────────────
@@ -756,9 +851,9 @@ RULES:
     });
 
     // Check for API key
-    GM_getValue(STORAGE_KEY, '').then ? 
-      GM_getValue(STORAGE_KEY, '').then(loadKey) : 
-      loadKey(GM_getValue(STORAGE_KEY, ''));
+    gmGetValue(STORAGE_KEY, localStorage.getItem(STORAGE_KEY) || '')
+      .then(loadKey)
+      .catch(() => loadKey(localStorage.getItem(STORAGE_KEY) || ''));
   }
 
   function loadKey(storedKey) {
@@ -785,7 +880,7 @@ RULES:
       const key = keyInput.value.trim();
       if (key) {
         apiKey = key;
-        GM_setValue(STORAGE_KEY, key);
+        gmSetValue(STORAGE_KEY, key);
         document.getElementById('clod-nav-messages').innerHTML = '';
         showWelcome();
       }
@@ -799,37 +894,25 @@ RULES:
 
   // ─── Initialize ──────────────────────────────────────────────────
   function init() {
-    console.log('[CLōD Navigator] init() called. readyState:', document.readyState, 'body:', !!document.body);
-    // Guard: don't inject twice (Chrome can re-run scripts on SPA navigation)
-    if (document.getElementById('clod-nav-sidebar')) {
-      console.log('[CLōD Navigator] Already injected, skipping.');
+    if (document.body && document.head) {
+      buildUI();
       return;
     }
 
-    // Wait for body to exist (Chrome MV3 timing can be different from Safari)
-    if (!document.body) {
-      console.log('[CLōD Navigator] No body yet, setting up MutationObserver...');
-      const observer = new MutationObserver(() => {
-        if (document.body) {
-          observer.disconnect();
-          console.log('[CLōD Navigator] Body appeared via observer, calling buildUI()');
-          buildUI();
-        }
-      });
-      observer.observe(document.documentElement, { childList: true });
-      return;
+    const startWhenReady = () => {
+      if (document.body && document.head) {
+        buildUI();
+      } else {
+        setTimeout(startWhenReady, 100);
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startWhenReady, { once: true });
+    } else {
+      startWhenReady();
     }
-
-    console.log('[CLōD Navigator] Body exists, calling buildUI()');
-    buildUI();
   }
 
-  // document-idle means DOM is ready, but double-check for SPA frameworks
-  console.log('[CLōD Navigator] readyState at script end:', document.readyState);
-  if (document.readyState === 'loading') {
-    console.log('[CLōD Navigator] Waiting for DOMContentLoaded...');
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  init();
 })();
