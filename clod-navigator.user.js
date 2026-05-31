@@ -1,19 +1,24 @@
 // ==UserScript==
 // @name         CLōD Navigator - AI Beginner Guide
 // @namespace    https://github.com/Mingz6/hackhub
-// @version      1.0.0
+// @version      1.0.1
 // @description  AI-powered page navigation assistant for CLōD/Codex beginners. Type plain language questions, get visual guidance with spotlight highlights.
 // @author       Team VideCoding (Ming, Andrew-Anqi)
 // @match        https://app.clod.io/*
 // @match        https://clod.io/*
+// @match        https://*.clod.io/*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_xmlhttpRequest
 // @connect      api.clod.io
+// @connect      clod.io
+// @run-at       document-idle
+// @noframes
 // ==/UserScript==
 
 (function () {
   'use strict';
+  console.log('[CLōD Navigator] Script loaded on:', location.href);
 
   // ─── Configuration ───────────────────────────────────────────────
   const CLOD_API_URL = 'https://api.clod.io/v1/chat/completions';
@@ -789,13 +794,28 @@ RULES:
 
   // ─── Initialize ──────────────────────────────────────────────────
   function init() {
-    // Wait for page to be ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', buildUI);
-    } else {
-      buildUI();
+    // Guard: don't inject twice (Chrome can re-run scripts on SPA navigation)
+    if (document.getElementById('clod-nav-sidebar')) return;
+
+    // Wait for body to exist (Chrome MV3 timing can be different from Safari)
+    if (!document.body) {
+      const observer = new MutationObserver(() => {
+        if (document.body) {
+          observer.disconnect();
+          buildUI();
+        }
+      });
+      observer.observe(document.documentElement, { childList: true });
+      return;
     }
+
+    buildUI();
   }
 
-  init();
+  // document-idle means DOM is ready, but double-check for SPA frameworks
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
