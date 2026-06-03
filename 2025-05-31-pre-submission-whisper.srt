@@ -1,0 +1,440 @@
+1
+00:00:11,200 --> 00:00:27,020
+ week so pointing out not a lot of people got codecs and so it's that for me as a non-developer
+
+2
+00:00:27,020 --> 00:00:33,340
+ what i realized at least at a small level like when building an mv product you don't have to be
+
+3
+00:00:33,340 --> 00:00:42,800
+ a student at the beginning stages and bring it to sort of production ready status i'm talking
+
+4
+00:00:42,800 --> 00:01:24,620
+ small application see i say your codecs is your let's say cursor is your product not sorry
+
+5
+00:01:24,620 --> 00:01:31,040
+ the plot is your main development platform asking uh whatever the development platform is asking to
+
+6
+00:01:31,040 --> 00:01:35,880
+ correct its own error when you're running that you get an error right yeah we face the same error
+
+7
+00:01:35,880 --> 00:01:41,520
+ like solve this what is using a completely different ai tool which is going to scan them
+
+8
+00:01:41,520 --> 00:01:47,370
+ tag code with right identify the gaps possibly identify the same error and that's all because
+
+9
+00:01:47,370 --> 00:01:52,450
+ what i've been i've not tried to do a platform cross-computing every time i get a syntax error
+
+10
+00:01:52,450 --> 00:01:55,730
+ or any kind of error i just paste it it will identify
+
+11
+00:01:55,730 --> 00:02:02,210
+ what the cause is correct the code and often than not it always gives me what i'm looking for
+
+12
+00:02:02,210 --> 00:02:07,450
+ which is the same and one right that's it that's a good question i think let me answer it and then
+
+13
+00:02:07,450 --> 00:02:15,110
+ tell me if your answer is matching up what you're saying but um i primarily use codecs now i prefer
+
+14
+00:02:15,110 --> 00:02:22,570
+ it it's a much easier experience and it's it's extremely good and it does a review on its own
+
+15
+00:02:22,570 --> 00:02:26,250
+ work if it finds something then i will do the same i'll just get it to fix it because
+
+16
+00:02:26,970 --> 00:02:28,790
+ it knows the code base it's focused on
+
+17
+00:02:28,790 --> 00:02:41,510
+ that segment of the code and so what i like to do today i've got a second appeal because i know that
+
+18
+00:02:41,510 --> 00:02:46,430
+ both of the platforms have strengths and weaknesses i shouldn't say weaknesses they're both really good
+
+19
+00:02:46,430 --> 00:02:52,690
+ but some of the uh they're good at different things and sometimes when the models change
+
+20
+00:02:52,690 --> 00:03:01,800
+ because the models seem to be changing like like two or three weeks it's either um chat gpt date
+
+21
+00:03:01,800 --> 00:03:11,870
+ so i like this back and forth because as a non-dev it gives me this that if i was a
+
+22
+00:03:11,870 --> 00:03:18,900
+ developer you know computer science crowd or whatever i probably just use one industry you
+
+23
+00:03:18,900 --> 00:03:30,090
+ could that's worth everything just getting a second sort of i yeah my experience is like i'm
+
+24
+00:03:30,090 --> 00:03:35,290
+ not right as i say competing each other but i try to build a similar scope within different platforms
+
+25
+00:03:35,290 --> 00:03:42,490
+ yeah just look i'm a developer like that so i can see the code quality structuring and all yes uh
+
+26
+00:03:42,490 --> 00:03:48,280
+ they are completely different if i'm trying to build similar structure into apps yes i like it's
+
+27
+00:03:48,280 --> 00:03:53,500
+ the mindset you know like if i'm familiar with certain models if i were to change the model or
+
+28
+00:03:53,500 --> 00:03:55,370
+ like in your case cross-compete you know i'm familiar with certain models if i were to change the model or like in your case cross-compete
+
+29
+00:03:55,370 --> 00:04:00,030
+ yes often than not it's an endless loop right yes like i will never get to a satisfaction like both
+
+30
+00:04:00,030 --> 00:04:04,350
+ will be with some stuff like we are good yeah because they're completely the thinking fellowship
+
+31
+00:04:04,350 --> 00:04:11,550
+ is very different right yes so where to stop is for me like when the application runs and delivers
+
+32
+00:04:11,550 --> 00:04:17,310
+ the way i need in terms of performance or the overall workflow that is what i think i can stop
+
+33
+00:04:17,310 --> 00:04:23,030
+ and i can put into production right but if i were to use the same code to a different ai model and
+
+34
+00:04:23,030 --> 00:04:26,220
+ identify how to improve upon and that process is going to be a little bit more complicated because
+
+35
+00:04:26,220 --> 00:04:26,320
+ that process is going to be a little bit more complicated because
+
+36
+00:04:26,240 --> 00:04:33,790
+ something which is still as i said it's an endless loop so in terms of value proposition
+
+37
+00:04:33,790 --> 00:04:40,060
+ why would you compete two ai models with a completely different thinking philosophy
+
+38
+00:04:40,060 --> 00:04:44,770
+ versus asking the same model who has written your code to solve the error that it is
+
+39
+00:04:44,770 --> 00:04:49,310
+ see i would put this question back to you as a developer if you know that the models are
+
+40
+00:04:49,310 --> 00:04:53,270
+ different if they have a different philosophy what is the opportunity the opportunity is to
+
+41
+00:04:53,270 --> 00:04:59,740
+ spend five minutes and maybe it actually uncovers something that the modeling doesn't know but the
+
+42
+00:04:59,740 --> 00:05:05,950
+ judgment that you don't have in the background so you'd be a better person to ask answer that
+
+43
+00:05:05,950 --> 00:05:20,320
+ question but only after you try oh no too because this is like what you do yeah oh cool yeah as in
+
+44
+00:05:20,320 --> 00:05:35,040
+ what am i building today yeah you're asking a question i'm using uh codex basic level uh script
+
+45
+00:05:35,040 --> 00:06:14,400
+ oh and why did you ask great so um the submission name in discord channel if you haven't i highly
+
+46
+00:06:14,400 --> 00:06:18,260
+ suggest you guys make a submission first we're going to go ahead and get started so i'm going to
+
+47
+00:06:18,260 --> 00:06:25,210
+ work on you can continue tweaking your project until four but make the submission before that
+
+48
+00:06:25,210 --> 00:06:36,130
+ so you don't miss a deadline okay so from 3 30 to 4 i will open this monitor for your testing highly
+
+49
+00:06:36,130 --> 00:06:41,100
+ suggest you guys come and test your connection through your laptop because you are going to use
+
+50
+00:06:41,100 --> 00:06:49,950
+ your laptop presentation it will be two minutes and uh we have some of our judges here so people
+
+51
+00:06:49,950 --> 00:06:57,510
+ may come and ask around what do you build feel free to kind of like a q a so you get a first
+
+52
+00:06:57,510 --> 00:07:08,030
+ impression from judges all right so and for the oh the mic bro all right so uh for the rest of
+
+53
+00:07:08,030 --> 00:07:14,530
+ the uh categorized price like from the sponsors uh there will be sponsor judges
+
+54
+00:07:14,940 --> 00:07:22,010
+ besides our judges to judge it so make submission online and i will share to sponsors like claude
+
+55
+00:07:22,010 --> 00:07:30,160
+ and i believe kai will be on site to judge for the best use of codex and we do have other sponsors
+
+56
+00:07:30,160 --> 00:07:41,480
+ online so make sure you make a submission before 3 30 and yeah so feel free to come to test your
+
+57
+00:07:41,480 --> 00:07:48,180
+ laptop for the demo i will get back to you guys at four o'clock
+
+58
+00:07:48,180 --> 00:07:57,010
+ for right any questions so far for submission any question all good cool all right so yeah
+
+59
+00:07:57,010 --> 00:08:15,050
+ do you have less than an hour good luck guys
+
+60
+00:08:15,050 --> 00:08:15,150
+ do you have less than an hour good luck guys
+
+61
+00:08:15,050 --> 00:08:22,480
+ do you have less than an hour good luck guys
+
+62
+00:08:22,480 --> 00:08:22,580
+ do you have less than an hour good luck guys
+
+63
+00:08:22,480 --> 00:08:22,580
+ do you have less than an hour good luck guys
+
+64
+00:08:22,480 --> 00:08:27,750
+ do you have less than an hour good luck guys
+
+65
+00:08:27,750 --> 00:08:31,390
+ do you have less than an hour good luck guys
+
+66
+00:08:31,390 --> 00:08:34,160
+ do you have less than an hour good luck guys
+
+67
+00:08:34,160 --> 00:08:34,260
+ do you have less than an hour good luck guys
+
+68
+00:08:34,160 --> 00:08:36,380
+ do you have less than an hour good luck guys
+
+69
+00:08:36,380 --> 00:08:36,480
+ do you have less than an hour good luck guys
+
+70
+00:08:36,380 --> 00:08:39,790
+ do you have less than an hour good luck guys
+
+71
+00:08:39,790 --> 00:08:39,890
+ do you have less than an hour good luck guys
+
+72
+00:08:39,790 --> 00:08:41,790
+ do you have less than an hour good luck guys
+
+73
+00:08:41,790 --> 00:08:41,890
+ do you have less than an hour good luck guys
+
+74
+00:08:41,790 --> 00:08:44,670
+ do you have less than an hour good luck guys
+
+75
+00:08:44,670 --> 00:08:46,750
+ do you have less than an hour good luck guys
+
+76
+00:08:46,750 --> 00:08:50,550
+ do you have less than an hour good luck guys
+
+77
+00:08:50,550 --> 00:08:53,350
+ do you have less than an hour good luck guys
+
+78
+00:08:53,350 --> 00:08:55,470
+ do you have less than an hour good luck guys
+
+79
+00:08:55,470 --> 00:08:57,470
+ do you have less than an hour good luck guys
+
+80
+00:08:57,470 --> 00:09:03,340
+ do you have less than an hour good luck guys
+
+81
+00:09:03,340 --> 00:09:05,370
+ do you have less than an hour good luck guys
+
+82
+00:09:05,370 --> 00:09:07,370
+ do you have less than an hour good luck guys
+
+83
+00:09:07,370 --> 00:09:10,360
+ do you have less than an hour good luck guys
+
+84
+00:09:10,360 --> 00:09:13,310
+ do you have less than an hour good luck guys
+
+85
+00:09:13,310 --> 00:09:15,450
+ do you have less than an hour good luck guys
+
+86
+00:09:15,450 --> 00:09:17,660
+ do you have less than an hour good luck guys
+
+87
+00:09:17,660 --> 00:09:19,660
+ do you have less than an hour good luck guys
+
+88
+00:09:19,660 --> 00:09:21,660
+ do you have less than an hour good luck guys
+
+89
+00:09:21,660 --> 00:09:23,680
+ do you have less than an hour good luck guys
+
+90
+00:09:23,680 --> 00:09:25,890
+ do you have less than an hour good luck guys
+
+91
+00:09:25,890 --> 00:09:28,170
+ do you have less than an hour good luck guys
+
+92
+00:09:28,170 --> 00:09:30,170
+ do you have less than an hour good luck guys
+
+93
+00:09:30,170 --> 00:09:32,170
+ do you have less than an hour good luck guys
+
+94
+00:09:32,170 --> 00:09:34,170
+ do you have less than an hour good luck guys
+
+95
+00:09:34,170 --> 00:09:36,160
+ do you have less than an hour good luck guys
+
+96
+00:09:36,160 --> 00:09:38,160
+ do you have less than an hour good luck guys
+
+97
+00:09:38,160 --> 00:09:40,540
+ do you have less than an hour good luck guys
+
+98
+00:09:40,540 --> 00:09:42,540
+ do you have less than an hour good luck guys
+
+99
+00:09:42,540 --> 00:09:44,540
+ do you have less than an hour good luck guys
+
+100
+00:09:44,540 --> 00:09:46,540
+ do you have less than an hour good luck guys
+
+101
+00:09:46,540 --> 00:09:48,540
+ do you have less than an hour good luck guys
+
+102
+00:09:48,540 --> 00:09:50,600
+ do you have less than an hour good luck guys
+
+103
+00:09:50,600 --> 00:09:53,620
+ do you have less than an hour good luck guys
+
+104
+00:09:53,620 --> 00:09:56,000
+ do you have less than an hour good luck guys
+
+105
+00:09:56,000 --> 00:09:58,700
+ do you have less than an hour good luck guys
+
+106
+00:09:58,700 --> 00:10:03,640
+ do you have less than an hour good luck guys
+
+107
+00:10:03,640 --> 00:10:08,980
+ do you have less than an hour good luck guys
+
+108
+00:10:08,980 --> 00:10:16,410
+ do you have less than an hour good luck guys
+
+109
+00:10:16,410 --> 00:10:18,410
+ do you have less than an hour good luck guys
+
+110
+00:10:18,410 --> 00:10:19,230
+ do you have less than an hour good luck guys
+

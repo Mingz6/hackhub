@@ -1,0 +1,110 @@
+ week so pointing out not a lot of people got codecs and so it's that for me as a non-developer
+ what i realized at least at a small level like when building an mv product you don't have to be
+ a student at the beginning stages and bring it to sort of production ready status i'm talking
+ small application see i say your codecs is your let's say cursor is your product not sorry
+ the plot is your main development platform asking uh whatever the development platform is asking to
+ correct its own error when you're running that you get an error right yeah we face the same error
+ like solve this what is using a completely different ai tool which is going to scan them
+ tag code with right identify the gaps possibly identify the same error and that's all because
+ what i've been i've not tried to do a platform cross-computing every time i get a syntax error
+ or any kind of error i just paste it it will identify
+ what the cause is correct the code and often than not it always gives me what i'm looking for
+ which is the same and one right that's it that's a good question i think let me answer it and then
+ tell me if your answer is matching up what you're saying but um i primarily use codecs now i prefer
+ it it's a much easier experience and it's it's extremely good and it does a review on its own
+ work if it finds something then i will do the same i'll just get it to fix it because
+ it knows the code base it's focused on
+ that segment of the code and so what i like to do today i've got a second appeal because i know that
+ both of the platforms have strengths and weaknesses i shouldn't say weaknesses they're both really good
+ but some of the uh they're good at different things and sometimes when the models change
+ because the models seem to be changing like like two or three weeks it's either um chat gpt date
+ so i like this back and forth because as a non-dev it gives me this that if i was a
+ developer you know computer science crowd or whatever i probably just use one industry you
+ could that's worth everything just getting a second sort of i yeah my experience is like i'm
+ not right as i say competing each other but i try to build a similar scope within different platforms
+ yeah just look i'm a developer like that so i can see the code quality structuring and all yes uh
+ they are completely different if i'm trying to build similar structure into apps yes i like it's
+ the mindset you know like if i'm familiar with certain models if i were to change the model or
+ like in your case cross-compete you know i'm familiar with certain models if i were to change the model or like in your case cross-compete
+ yes often than not it's an endless loop right yes like i will never get to a satisfaction like both
+ will be with some stuff like we are good yeah because they're completely the thinking fellowship
+ is very different right yes so where to stop is for me like when the application runs and delivers
+ the way i need in terms of performance or the overall workflow that is what i think i can stop
+ and i can put into production right but if i were to use the same code to a different ai model and
+ identify how to improve upon and that process is going to be a little bit more complicated because
+ that process is going to be a little bit more complicated because
+ something which is still as i said it's an endless loop so in terms of value proposition
+ why would you compete two ai models with a completely different thinking philosophy
+ versus asking the same model who has written your code to solve the error that it is
+ see i would put this question back to you as a developer if you know that the models are
+ different if they have a different philosophy what is the opportunity the opportunity is to
+ spend five minutes and maybe it actually uncovers something that the modeling doesn't know but the
+ judgment that you don't have in the background so you'd be a better person to ask answer that
+ question but only after you try oh no too because this is like what you do yeah oh cool yeah as in
+ what am i building today yeah you're asking a question i'm using uh codex basic level uh script
+ oh and why did you ask great so um the submission name in discord channel if you haven't i highly
+ suggest you guys make a submission first we're going to go ahead and get started so i'm going to
+ work on you can continue tweaking your project until four but make the submission before that
+ so you don't miss a deadline okay so from 3 30 to 4 i will open this monitor for your testing highly
+ suggest you guys come and test your connection through your laptop because you are going to use
+ your laptop presentation it will be two minutes and uh we have some of our judges here so people
+ may come and ask around what do you build feel free to kind of like a q a so you get a first
+ impression from judges all right so and for the oh the mic bro all right so uh for the rest of
+ the uh categorized price like from the sponsors uh there will be sponsor judges
+ besides our judges to judge it so make submission online and i will share to sponsors like claude
+ and i believe kai will be on site to judge for the best use of codex and we do have other sponsors
+ online so make sure you make a submission before 3 30 and yeah so feel free to come to test your
+ laptop for the demo i will get back to you guys at four o'clock
+ for right any questions so far for submission any question all good cool all right so yeah
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys
+ do you have less than an hour good luck guys

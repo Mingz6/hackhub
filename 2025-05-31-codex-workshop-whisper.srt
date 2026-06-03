@@ -1,0 +1,976 @@
+1
+00:00:00,190 --> 00:00:09,190
+ Here's a graph, again, of the artificial analysis intelligence index, which is, again, a benchmark that Big Show is going to focus on, that they're doing quite well on.
+
+2
+00:00:09,190 --> 00:00:15,440
+ And this is a chart that I think is really interesting. It's intelligence versus output tokens.
+
+3
+00:00:15,440 --> 00:00:27,560
+ So as you can see, GPT-5.5, Baud, and even Muse and Kimi are scoring quite well in the larger amount of tokens used.
+
+4
+00:00:27,560 --> 00:00:33,890
+ So that's one of the reasons for the graph, and strong outputs.
+
+5
+00:00:33,890 --> 00:00:43,270
+ There are some other interesting ones, like GPT-5.4 and 5, without reasoning, are very strong, so the amount of tokens they consume.
+
+6
+00:00:43,270 --> 00:00:50,460
+ Also, Gemma 4 being only a 31-beam model showing up on the graph at all, I think is very interesting,
+
+7
+00:00:50,460 --> 00:01:01,540
+ even though it uses a relatively large amount of tokens for its highest intelligence level.
+
+8
+00:01:01,540 --> 00:03:03,660
+ You got a video?
+
+9
+00:03:05,460 --> 00:03:08,590
+ There's a lot of those here.
+
+10
+00:03:08,590 --> 00:03:12,090
+ The thing we can do is hit the ground running.
+
+11
+00:03:12,090 --> 00:03:19,150
+ I'm going to ask how that's getting me ready for a search on Google Calendar, Gmail, Slack.
+
+12
+00:03:19,150 --> 00:03:23,420
+ That gives me some free commands that I'm ready for my upcoming sales call.
+
+13
+00:03:23,420 --> 00:03:31,130
+ That's the set of fully connected, useful, first workflow.
+
+14
+00:03:31,130 --> 00:03:46,690
+ So yeah, I guess those basically show you what the UI is going to look like, especially when you're setting up plug-ins,
+
+15
+00:03:46,690 --> 00:03:50,290
+ which, depending on what you're working on, can be super helpful.
+
+16
+00:03:50,290 --> 00:03:57,870
+ I basically just want to go through how to get you set up, talk about some use cases,
+
+17
+00:03:57,870 --> 00:04:04,730
+ and I've set up also a short workshop on using the API, which I've coded myself using the mobile app.
+
+18
+00:04:04,730 --> 00:04:16,180
+ So some of the topics: introduction and setup, agents, how to delegate, some use cases, and then a few more advanced tips.
+
+19
+00:04:16,180 --> 00:04:20,840
+ So this is just basically the history.
+
+20
+00:04:20,840 --> 00:04:25,840
+ We started with code-complete, like copilot-type things, just finishing lines and suggesting words.
+
+21
+00:04:25,840 --> 00:04:28,760
+ We've got two Parapro now.
+
+22
+00:04:28,760 --> 00:04:33,400
+ It's able to do a whole task for you autonomously.
+
+23
+00:04:33,400 --> 00:04:39,040
+ You still should be watching over it and checking up on it, but it's able to do a lot more now.
+
+24
+00:04:39,040 --> 00:04:42,470
+ So there are three ways you can download it.
+
+25
+00:04:42,470 --> 00:04:44,470
+ Make sure you're getting it from the official OpenAI source.
+
+26
+00:04:44,470 --> 00:04:51,110
+ I do know that there's been some fake ones that have pulled up Google Ads, so just double-check that.
+
+27
+00:04:51,110 --> 00:04:54,360
+ But you get the CLI, which I would recommend if you're on Linux.
+
+28
+00:04:54,360 --> 00:04:56,360
+ It's pretty powerful and lightweight.
+
+29
+00:04:56,360 --> 00:05:02,670
+ Codex App, which is really good for just direct use in Windows and Mac.
+
+30
+00:05:02,670 --> 00:05:07,310
+ And then inside your IDE for a more integrated workflow
+
+31
+00:05:07,310 --> 00:05:11,410
+ with your files, so you can directly edit things while you're going.
+
+32
+00:05:11,410 --> 00:05:15,130
+ Here's just basically how to set it up.
+
+33
+00:05:15,130 --> 00:05:19,630
+ There is the link and the install for the CLI.
+
+34
+00:05:19,630 --> 00:05:24,580
+ You get it if you're in VS Code, just from the plugin section by searching Codex.
+
+35
+00:05:24,580 --> 00:05:32,820
+ So to start, you want to open a repository.
+
+36
+00:05:32,820 --> 00:05:35,910
+ You can also do it without one, just folderless.
+
+37
+00:05:35,910 --> 00:05:47,650
+ But basically, it needs a folder to think about and to put files into, test them from, and so on and so forth.
+
+38
+00:05:47,650 --> 00:05:50,120
+ I'll show you the agents one as an example.
+
+39
+00:05:50,120 --> 00:05:52,120
+ This agents.md file is pretty important.
+
+40
+00:05:52,120 --> 00:05:58,600
+ It is the, essentially, set of rules and instructions that you give the agents who knows how to update your codebase,
+
+41
+00:05:58,600 --> 00:06:00,990
+ run your code, things like that.
+
+42
+00:06:00,990 --> 00:06:05,050
+ You can also ask it to update these files with you as you go.
+
+43
+00:06:05,050 --> 00:06:09,270
+ I essentially use it as a map to point it at the most important parts.
+
+44
+00:06:09,270 --> 00:06:13,600
+ You just start with the prompt.
+
+45
+00:06:13,600 --> 00:06:19,360
+ If you're not sure what you want it to do yet, I like to keep a to-do list and ask it, you know,
+
+46
+00:06:19,360 --> 00:06:21,360
+ "What's new on the to-do list? What's something you can do yourself?
+
+47
+00:06:21,360 --> 00:06:25,680
+ What's something that you think would be high value that you need me to check over?"
+
+48
+00:06:25,680 --> 00:06:26,740
+ Stuff like that.
+
+49
+00:06:26,740 --> 00:06:30,980
+ And so let's talk about the agents.
+
+50
+00:06:30,980 --> 00:06:35,570
+ So it starts with a prompt, same as normal ChatGPT would.
+
+51
+00:06:35,570 --> 00:06:38,110
+ And then it does the inference.
+
+52
+00:06:38,110 --> 00:06:44,540
+ And it also runs tool calls, essentially just small snippets of code on your computer.
+
+53
+00:06:44,540 --> 00:06:49,520
+ And it keeps doing that until it is satisfied and then it will respond to you.
+
+54
+00:06:49,520 --> 00:06:52,480
+ At this point, it's often just the tool calls.
+
+55
+00:06:52,480 --> 00:06:54,480
+ The response is not actually what you're looking for.
+
+56
+00:06:54,480 --> 00:06:55,480
+ You're looking for the actions that it takes.
+
+57
+00:06:55,480 --> 00:07:00,270
+ One thing to keep in mind is context.
+
+58
+00:07:00,270 --> 00:07:05,930
+ When you run the prompt, ChatGPT will look at all of the information that it's fed.
+
+59
+00:07:05,930 --> 00:07:13,690
+ So that would mean the agents.md as a start and anything it chooses to read, plus the prompt.
+
+60
+00:07:13,690 --> 00:07:26,200
+ So yeah, it can hold a lot of text, like four to six hundred pages.
+
+61
+00:07:26,200 --> 00:07:30,580
+ But some of these repositories and long workflows get a lot longer.
+
+62
+00:07:30,580 --> 00:07:37,880
+ What it does now is compact the context after a while, which means basically writing a summary for itself.
+
+63
+00:07:37,880 --> 00:07:48,000
+ It's very important to think about what you put in the context window because that is directly influencing the model's output from start to finish.
+
+64
+00:07:48,000 --> 00:08:41,600
+ Sorry guys.
+
+65
+00:08:41,600 --> 00:10:02,500
+ So Codex does manage the context.
+
+66
+00:10:02,500 --> 00:10:11,200
+ Like I said, long conversations will lead to a bit of context drop where it gets confused and forgets things.
+
+67
+00:10:11,200 --> 00:10:17,510
+ It does do its best here, but you do want to try to start a new conversation when you find things are going off the rails.
+
+68
+00:10:17,510 --> 00:10:19,890
+ You can rely on this context window.
+
+69
+00:10:19,890 --> 00:10:26,890
+ The context is automatically compacted, but only to a certain extent.
+
+70
+00:10:26,890 --> 00:10:32,890
+ So yeah, when you work with Codex, you want to make sure that you're delegating, but you don't want to totally remove yourself from the process.
+
+71
+00:10:32,890 --> 00:10:41,120
+ You need to make sure that you're learning and actually thinking about what you want and what makes a successful app, product, or whatever you're working on.
+
+72
+00:10:41,120 --> 00:10:48,260
+ So yeah, start by building the perfect context, not the perfect prompt.
+
+73
+00:10:48,260 --> 00:10:50,260
+ Remember, the prompt is just part of the context.
+
+74
+00:10:50,260 --> 00:10:53,710
+ It's going to go through and it's going to search your codebase.
+
+75
+00:10:53,710 --> 00:10:56,930
+ It might search external sources, things like that.
+
+76
+00:10:56,930 --> 00:11:00,950
+ You want to make sure it's getting high quality information at every step.
+
+77
+00:11:00,950 --> 00:11:02,950
+ Faster validation means better outcomes.
+
+78
+00:11:02,950 --> 00:11:08,160
+ That means just checking stuff, getting a test signal itself, things like that.
+
+79
+00:11:08,160 --> 00:11:10,160
+ Use the agent to learn, not vibe code.
+
+80
+00:11:10,160 --> 00:11:16,780
+ If you're vibe coding, you want to make sure you're actually engaging with the process at every step.
+
+81
+00:11:16,780 --> 00:11:22,360
+ So start with the goal.
+
+82
+00:11:22,360 --> 00:11:23,360
+ Choose the files you want.
+
+83
+00:11:23,360 --> 00:11:25,360
+ Like I said, you can bake these into your repo.
+
+84
+00:11:25,360 --> 00:11:27,290
+ Strengths.
+
+85
+00:11:27,290 --> 00:11:29,440
+ Tell it not to do certain things if you need.
+
+86
+00:11:29,440 --> 00:11:34,790
+ And then give it an actual goal, because otherwise it'll just keep running forever and not really know what it's doing.
+
+87
+00:11:34,790 --> 00:11:39,040
+ And it might decide it's finished before you want it to be.
+
+88
+00:11:39,040 --> 00:11:41,790
+ And you can use plan mode.
+
+89
+00:11:41,790 --> 00:11:44,770
+ You can get into that with shift app or slash plan.
+
+90
+00:11:44,770 --> 00:11:54,480
+ And this will basically have it walk through a series of questions about your prompt in order to build a longer prompt for itself that you can review before you execute.
+
+91
+00:11:54,480 --> 00:11:59,270
+ This is super useful, especially when I'm not sure what I want to do quite yet.
+
+92
+00:11:59,270 --> 00:12:08,290
+ I have like a starter idea, but the details aren't quite filled in and they are still sensitive to, yeah, exactly what's running.
+
+93
+00:12:08,290 --> 00:12:12,040
+ Use cases.
+
+94
+00:12:12,040 --> 00:12:15,010
+ The learning of code base.
+
+95
+00:12:15,010 --> 00:12:18,430
+ Especially helpful when learning about somebody else's code.
+
+96
+00:12:18,430 --> 00:12:23,730
+ If you guys have been reading code a lot, it's one thing to read back your own code.
+
+97
+00:12:23,730 --> 00:12:26,690
+ But reading somebody else's code can be a bit of an adventure.
+
+98
+00:12:26,690 --> 00:12:30,180
+ This can help with that a lot.
+
+99
+00:12:30,180 --> 00:12:33,490
+ Building plans like we just discussed.
+
+100
+00:12:33,490 --> 00:12:36,490
+ Investigating changes instead of just going right ahead and implementing them.
+
+101
+00:12:36,490 --> 00:12:40,280
+ And then taking in error logs and determining re-causes.
+
+102
+00:12:40,280 --> 00:12:42,530
+ This is a really big one for me.
+
+103
+00:12:42,530 --> 00:12:49,350
+ Making sure my apps are outputting information on what has happened so that I can go in and instead of having to guess,
+
+104
+00:12:49,350 --> 00:12:54,460
+ call Codex, look at what happened, diagnose the error and suggest a fix.
+
+105
+00:12:54,460 --> 00:12:57,710
+ It saves a lot of time for me and makes things a lot higher quality.
+
+106
+00:12:57,710 --> 00:13:03,540
+ Review, which success, I believe that's as a skill.
+
+107
+00:13:03,540 --> 00:13:05,890
+ Same with plans.
+
+108
+00:13:05,890 --> 00:13:12,590
+ Something that I would do pretty regularly to make sure that your code is up to date and high quality as you keep moving forward.
+
+109
+00:13:12,590 --> 00:13:25,180
+ And write documentation, which again is helpful for not just agents, but for users themselves and for yourself so they remember what you've been doing.
+
+110
+00:13:25,180 --> 00:13:29,030
+ Writing tests with Codex.
+
+111
+00:13:29,030 --> 00:13:32,450
+ I will say you might not want to write all of your tests with Codex.
+
+112
+00:13:32,450 --> 00:13:35,590
+ It will sometimes write tests that are a little too easy to pass.
+
+113
+00:13:35,590 --> 00:13:42,770
+ But it is very good at writing unit tests and to be honest, having simple tests is a lot better than having none.
+
+114
+00:13:42,770 --> 00:13:48,750
+ You do want to review these to make sure they're achieving the actual goals you want.
+
+115
+00:13:48,750 --> 00:13:58,140
+ But as you make changes, if you don't have a set of tests, there is no way of knowing if you've broken something while updating.
+
+116
+00:13:58,140 --> 00:14:00,590
+ Which is going to happen a lot.
+
+117
+00:14:00,590 --> 00:14:06,540
+ Using unit tests also helps with collaborating and like I said, remember to review it yourself.
+
+118
+00:14:06,540 --> 00:14:11,500
+ So that it's a test you actually want to verify repeatedly.
+
+119
+00:14:11,500 --> 00:14:18,760
+ And not just something that is because it is important.
+
+120
+00:14:18,760 --> 00:14:22,130
+ It's essentially more about tests.
+
+121
+00:14:22,130 --> 00:14:36,000
+ Again, the faster you're able to iterate on the step of the loop, you can move on to the next step on pounds pretty quickly.
+
+122
+00:14:36,000 --> 00:14:38,700
+ That's why you want to define success deterministically.
+
+123
+00:14:38,700 --> 00:14:42,590
+ Do that just like Codex.
+
+124
+00:14:42,590 --> 00:14:46,920
+ Write the test and review it when you can.
+
+125
+00:14:46,920 --> 00:14:48,950
+ Again, we've kind of seen this flow chart again.
+
+126
+00:14:48,950 --> 00:14:50,950
+ This is more towards a team perspective.
+
+127
+00:14:50,950 --> 00:14:59,410
+ Including tests, built-in steps, reviews between the actual team members or team agents.
+
+128
+00:14:59,410 --> 00:15:00,480
+ Depending on your team size.
+
+129
+00:15:00,480 --> 00:15:04,750
+ Making sure that you have documents and that it's deployed well.
+
+130
+00:15:04,750 --> 00:15:10,740
+ Not sure anyone here is going to be deploying today, but it's good to keep in mind if you plan to scale.
+
+131
+00:15:10,740 --> 00:15:19,780
+ Some more advanced concepts.
+
+132
+00:15:19,780 --> 00:15:21,780
+ Standardized behavior with configurations.
+
+133
+00:15:21,780 --> 00:15:23,800
+ I discussed agents.md.
+
+134
+00:15:23,800 --> 00:15:27,090
+ I personally also keep a to-do list markdown file.
+
+135
+00:15:27,090 --> 00:15:30,750
+ A to-do list that's managed by the agent.
+
+136
+00:15:30,750 --> 00:15:31,750
+ A set of documentation that's managed by the agent.
+
+137
+00:15:31,750 --> 00:15:34,230
+ A QA log.
+
+138
+00:15:34,230 --> 00:15:37,240
+ What else?
+
+139
+00:15:37,240 --> 00:15:40,350
+ Issue tracker as well.
+
+140
+00:15:40,350 --> 00:15:46,600
+ A lot of these things can be handled through outside platforms like GitHub or Jira, but you can do it internally just using Textile.
+
+141
+00:15:46,600 --> 00:15:49,390
+ Scale and distribute with skills.
+
+142
+00:15:49,390 --> 00:15:57,820
+ So once you have a process that works, and this doesn't have to be specific to a repository, you essentially make, again, Textile.
+
+143
+00:15:57,820 --> 00:16:04,130
+ It gets saved as a skill that's similar to the plug-ins for, say, Gmail that was shown at the beginning.
+
+144
+00:16:04,130 --> 00:16:07,320
+ And then connect to your tools with apps and MCPs.
+
+145
+00:16:07,320 --> 00:16:15,010
+ This would be for things like GitHub, like I mentioned, just connecting directly so that you don't have to go through the interface.
+
+146
+00:16:15,010 --> 00:16:20,600
+ There'll be some things you want to put in the agents file.
+
+147
+00:16:20,600 --> 00:16:23,800
+ A map of your code base.
+
+148
+00:16:23,800 --> 00:16:26,590
+ Pitfalls that it might run into.
+
+149
+00:16:26,590 --> 00:16:29,350
+ Keep updating as you go.
+
+150
+00:16:29,350 --> 00:16:33,500
+ Any global contacts can be put in your user folders of agents.md.
+
+151
+00:16:33,500 --> 00:16:35,500
+ It doesn't need to be just in your info.
+
+152
+00:16:35,500 --> 00:16:42,460
+ It must pervade inside a subfolder so that as it goes through, if it's in that folder, it might find more info.
+
+153
+00:16:42,460 --> 00:16:45,890
+ That would be, I guess, the overwrite thing.
+
+154
+00:16:45,890 --> 00:16:51,950
+ For apps, again, we've touched on this a few times.
+
+155
+00:16:51,950 --> 00:16:55,880
+ Desktop app support is a lot better now.
+
+156
+00:16:55,880 --> 00:16:56,880
+ This is a little dated.
+
+157
+00:16:56,880 --> 00:17:00,340
+ Building skills.
+
+158
+00:17:00,340 --> 00:17:02,340
+ It starts with just a skill file.
+
+159
+00:17:02,340 --> 00:17:03,340
+ You can add scripts.
+
+160
+00:17:03,340 --> 00:17:05,340
+ Yes, yes, please.
+
+161
+00:17:05,340 --> 00:17:07,730
+ Add a bundle for it.
+
+162
+00:17:07,730 --> 00:17:13,810
+ Eventually, I guess, there is also plug-ins, which might be a plug-in and not a skill.
+
+163
+00:17:13,810 --> 00:17:16,800
+ A skill is just the file, and then the plug-in is the whole bundle.
+
+164
+00:17:16,800 --> 00:17:20,820
+ It's now called plug-ins.
+
+165
+00:17:20,820 --> 00:17:23,520
+ It's on the video earlier.
+
+166
+00:17:23,520 --> 00:17:49,180
+ So, to use the skill, you just want to do slash and then the name of the skill, and it will pop up.
+
+167
+00:17:49,180 --> 00:17:54,640
+ You can mention it in plain language as well, but being specific helps a lot.
+
+168
+00:17:54,640 --> 00:17:57,920
+ I would recommend maybe building a skill if you want to work with Codex.
+
+169
+00:17:57,920 --> 00:17:59,870
+ Just ask it to make something.
+
+170
+00:17:59,870 --> 00:18:05,710
+ And pick a task that requires access and structure that agents don't naturally have.
+
+171
+00:18:05,710 --> 00:18:10,090
+ So, that might be connecting to this command line or an API.
+
+172
+00:18:10,090 --> 00:18:16,710
+ Or it might just be adding, like, internal how-we-do-it-here rules.
+
+173
+00:18:16,710 --> 00:18:22,230
+ Uh, guardrails, like compliance tagging or specific workflows for best practices.
+
+174
+00:18:22,230 --> 00:18:59,630
+ I'm going to try to reconnect to the display and then get this workshop ready for you guys to present.
+
+175
+00:18:59,630 --> 00:19:22,270
+ Because there is still time.
+
+176
+00:19:22,270 --> 00:19:26,410
+ But as long as it's before 11:30, we can do that.
+
+177
+00:19:26,410 --> 00:19:28,410
+ And then at 10:30, we can do that.
+
+178
+00:19:28,410 --> 00:19:36,570
+ So, it's like a Discord.
+
+179
+00:19:36,570 --> 00:19:40,480
+ Yeah.
+
+180
+00:19:40,480 --> 00:19:41,920
+ Okay, here we go.
+
+181
+00:19:41,920 --> 00:19:43,920
+ So, this is one of my get help pages.
+
+182
+00:19:43,920 --> 00:19:46,580
+ I've got yours on.
+
+183
+00:19:46,580 --> 00:19:49,920
+ I can hop into it here.
+
+184
+00:19:49,920 --> 00:19:53,920
+ So, let me just start by telling you the most recent updates that I made on my phone.
+
+185
+00:19:53,920 --> 00:19:57,450
+ So, I'm going to show you guys the latest updates.
+
+186
+00:19:57,450 --> 00:19:58,450
+ So, I'm going to show you guys the latest updates.
+
+187
+00:19:58,450 --> 00:19:59,450
+ So, let me just start by telling you the latest updates.
+
+188
+00:19:59,450 --> 00:20:00,450
+ So, let me just start by telling you the latest updates.
+
+189
+00:20:00,450 --> 00:20:01,450
+ So, let me just start by telling you the latest updates.
+
+190
+00:20:01,450 --> 00:20:02,800
+ So, let me just start by telling you the latest updates.
+
+191
+00:20:02,800 --> 00:20:03,800
+ So, let me just start by telling you the latest updates.
+
+192
+00:20:03,800 --> 00:20:05,310
+ So, let me just start by telling you the latest updates.
+
+193
+00:20:05,310 --> 00:20:06,310
+ So, let me just start by telling you the latest updates.
+
+194
+00:20:06,310 --> 00:20:07,330
+ So, let me just start by telling you the latest updates.
+
+195
+00:20:07,330 --> 00:20:08,370
+ So, let me just start by telling you the latest updates.
+
+196
+00:20:08,370 --> 00:20:09,370
+ So, let me just start by telling you the latest updates.
+
+197
+00:20:09,370 --> 00:20:10,370
+ So, let me just start by telling you the latest updates.
+
+198
+00:20:10,370 --> 00:20:11,370
+ So, let me just start by telling you the latest updates.
+
+199
+00:20:11,370 --> 00:20:12,840
+ So, let me just start by telling you the latest updates.
+
+200
+00:20:12,840 --> 00:20:13,860
+ So, let me just start by telling you the latest updates.
+
+201
+00:20:13,860 --> 00:20:14,860
+ So, let me just start by telling you the latest updates.
+
+202
+00:20:14,860 --> 00:20:18,190
+ So, let me just start by telling you the latest updates.
+
+203
+00:20:18,190 --> 00:20:19,190
+ So, let me just start by telling you the latest updates.
+
+204
+00:20:19,190 --> 00:20:20,190
+ So, let me just start by telling you the latest updates.
+
+205
+00:20:20,190 --> 00:20:21,190
+ So, let me just start by telling you the latest updates.
+
+206
+00:20:21,190 --> 00:20:22,380
+ So, let me just start by telling you the latest updates.
+
+207
+00:20:22,380 --> 00:20:23,350
+ So, let me just start by telling you the latest updates.
+
+208
+00:20:23,350 --> 00:20:24,350
+ So, let me just start by telling you the latest updates.
+
+209
+00:20:24,350 --> 00:20:25,310
+ So, let me just start by telling you the latest updates.
+
+210
+00:20:25,310 --> 00:20:26,310
+ So, let me just start by telling you the latest updates.
+
+211
+00:20:26,310 --> 00:20:27,310
+ So, let me just start by telling you the latest updates.
+
+212
+00:20:27,310 --> 00:20:28,300
+ So, let me just start by telling you the latest updates.
+
+213
+00:20:28,300 --> 00:20:29,330
+ You can see the latest updates.
+
+214
+00:20:29,330 --> 00:20:30,720
+ You can see the latest updates.
+
+215
+00:20:30,720 --> 00:20:40,380
+ So, let me just start by telling you the latest updates.
+
+216
+00:20:40,380 --> 00:20:41,380
+ So, let me just start by telling you the latest updates.
+
+217
+00:20:41,380 --> 00:20:42,380
+ So, let me just start by telling you the latest updates.
+
+218
+00:20:42,380 --> 00:20:43,380
+ So, let me just start by telling you the latest updates.
+
+219
+00:20:43,380 --> 00:20:45,320
+ So, let me just start by telling you the latest updates.
+
+220
+00:20:45,320 --> 00:20:46,520
+ So, let me just start by telling you the latest updates.
+
+221
+00:20:46,520 --> 00:20:47,510
+ So, let me just start by telling you the latest updates.
+
+222
+00:20:47,510 --> 00:20:48,510
+ So, let me just start by telling you the latest updates.
+
+223
+00:20:48,510 --> 00:21:22,530
+ So, let me just start by telling you the latest updates.
+
+224
+00:21:22,530 --> 00:21:23,560
+ So, let me just start by telling you the latest updates.
+
+225
+00:21:23,560 --> 00:21:24,560
+ So, let me just start by telling you the latest updates.
+
+226
+00:21:24,560 --> 00:21:25,560
+ So, let me just start by telling you the latest updates.
+
+227
+00:21:25,560 --> 00:21:26,560
+ So, let me just start by telling you the latest updates.
+
+228
+00:21:26,560 --> 00:21:27,560
+ So, let me just start by telling you the latest updates.
+
+229
+00:21:27,560 --> 00:21:28,520
+ So, let me just start by telling you the latest updates.
+
+230
+00:21:28,520 --> 00:21:29,520
+ So, let me just start by telling you the latest updates.
+
+231
+00:21:30,520 --> 00:21:31,520
+ So, let me just start by telling you the latest updates.
+
+232
+00:21:31,520 --> 00:21:34,140
+ So, let me just start by telling you the latest updates.
+
+233
+00:21:34,140 --> 00:21:35,150
+ So, let me just start by telling you the latest updates.
+
+234
+00:21:35,150 --> 00:21:36,330
+ So, let me just start by telling you the latest updates.
+
+235
+00:21:36,330 --> 00:21:37,810
+ So, let me just start by telling you the latest updates.
+
+236
+00:21:37,810 --> 00:21:38,810
+ So, let me just start by telling you the latest updates.
+
+237
+00:21:38,810 --> 00:21:39,840
+ So, let me just start by telling you the latest updates.
+
+238
+00:21:39,840 --> 00:21:40,840
+ So, let me just start by telling you the latest updates.
+
+239
+00:21:40,840 --> 00:21:41,840
+ So, let me just start by telling you the latest updates.
+
+240
+00:21:41,840 --> 00:21:43,670
+ So, let me just start by telling you the latest updates.
+
+241
+00:21:43,670 --> 00:21:45,410
+ So, let me just start by telling you the latest updates.
+
+242
+00:21:45,410 --> 00:21:46,410
+ So, let me just start by telling you the latest updates.
+
+243
+00:21:46,410 --> 00:22:08,950
+ So, let me just start by telling you the latest updates.
+
+244
+00:22:08,950 --> 00:22:13,690
+ So, let me just start by telling you the latest updates.
+

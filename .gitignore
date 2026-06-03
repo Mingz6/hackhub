@@ -1,0 +1,4 @@
+# Audio files (keep locally, don't push to git)
+*.m4a
+*.qta
+*.wav

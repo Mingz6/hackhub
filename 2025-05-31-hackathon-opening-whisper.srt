@@ -1,0 +1,548 @@
+1
+00:00:00,130 --> 00:00:08,690
+ to host hackathon like 24 hours, 48 hours, even longer, but now we are able to host a hackathon
+
+2
+00:00:08,690 --> 00:00:15,390
+ within eight hours, so that's amazing. So that's why I think like Vibe Coding brings a lot of
+
+3
+00:00:15,390 --> 00:00:23,400
+ people from different industries, a lot of experts, and even like non-coder, non-tech people join our
+
+4
+00:00:23,400 --> 00:00:30,360
+ hackathons. I'm so excited to see what you guys can build within a day using Vibe Coding. If you
+
+5
+00:00:30,360 --> 00:00:36,530
+ haven't like done any programming before, that's fine. We'll have a workshop teaching you how to
+
+6
+00:00:36,530 --> 00:00:44,230
+ Vibe Code today, so you can learn and build in a day. All right, before that, let's welcome Kevin,
+
+7
+00:00:44,870 --> 00:00:52,720
+ one of our Grand Prize sponsors, Peck, and he is going to give a quick remark for today.
+
+8
+00:00:52,720 --> 00:00:57,850
+ Thank you very much. Thanks, Jian. Thanks to the host and all the sponsors,
+
+9
+00:00:57,850 --> 00:01:02,650
+ including myself, and thanks to CozyLab for having this beautiful
+
+10
+00:01:02,650 --> 00:01:08,650
+ place. My name is Kevin. So when I was very young, I fell in love with technology
+
+11
+00:01:08,650 --> 00:01:15,060
+ since grade one or grade two, and I played a lot of Solitary and Minesweeper,
+
+12
+00:01:16,320 --> 00:01:21,700
+ and I tried programming myself too, but my parents, the conventional family, they said,
+
+13
+00:01:21,700 --> 00:01:27,650
+ "Hey, it's better to focus on the academic," and then they kindly put my keyboard in a box,
+
+14
+00:01:27,650 --> 00:01:33,700
+ and they put a lock on it, so I couldn't advance my programming career from there. However,
+
+15
+00:01:33,700 --> 00:01:39,510
+ it's not an excuse. I'm not blaming my parents. I love them, but it's a story I kind of learned
+
+16
+00:01:39,510 --> 00:01:45,190
+ myself. Do not give up. You're going to be resilient, so there's no reasons or excuses for
+
+17
+00:01:45,830 --> 00:01:51,670
+ anything, for doing what you love. So with the technology today, it enables everybody to
+
+18
+00:01:51,670 --> 00:01:56,710
+ become your own founder, become your own entrepreneur, and also a lot easier to
+
+19
+00:01:56,710 --> 00:02:04,500
+ make a product. Everybody can become a super company yourself, rather than having many
+
+20
+00:02:04,500 --> 00:02:11,230
+ huge amount of people to work on a project. We can do a lot on ourselves nowadays too.
+
+21
+00:02:11,230 --> 00:02:16,780
+ So interestingly enough, I circled back my career into real estate. I think currently we're working
+
+22
+00:02:16,780 --> 00:02:25,830
+ on a data center project from turning a two megawatt legacy data center into upgrading and
+
+23
+00:02:25,830 --> 00:02:35,100
+ also retrofitting into a 10 megawatt AI computing facility in Burnaby. So that's also another
+
+24
+00:02:35,100 --> 00:02:41,800
+ small bit of a challenge I'd like to share with everybody to say, "Hey, when you build a product,
+
+25
+00:02:41,800 --> 00:02:47,860
+ consider what is the use of the product. What is the problem it's trying to solve from a day-to-day
+
+26
+00:02:47,860 --> 00:02:55,910
+ and to a more societal approach? What is the problem to solve?" And also, I try to ask everybody
+
+27
+00:02:55,910 --> 00:03:05,320
+ to maybe consider the data layer to see what is the best use of the data and also what could be a
+
+28
+00:03:05,320 --> 00:03:11,120
+ local computing scenario to use up the two to 10 megawatt smaller data centers. So that's something
+
+29
+00:03:11,120 --> 00:03:15,520
+ I'd love to share with everybody and looking forward to see the product by the end of today.
+
+30
+00:03:15,520 --> 00:03:17,130
+ Thank you. Have a good one.
+
+31
+00:03:17,130 --> 00:03:26,110
+ Thank you, Kevin. All right. So a little bit about a rundown.
+
+32
+00:03:26,110 --> 00:03:31,550
+ I think you were curious about it. I tried to simplify it and give you more time to build.
+
+33
+00:03:31,550 --> 00:03:40,210
+ So 10:30, we will have a team up who haven't formed a team here. Oh, a lot of, okay, cool. So
+
+34
+00:03:40,210 --> 00:03:47,410
+ we'll do a team up at 10:30 and starting 11, you can start hacking. Actually, you can start now.
+
+35
+00:03:47,410 --> 00:03:55,270
+ I don't mind you start early, but let's do it just today. Okay. We will have a Codex workshop by Kai.
+
+36
+00:03:55,270 --> 00:04:02,830
+ Do we have Kai here? Yeah. So Kai is a Codex ambassador in Vancouver and he is going to give
+
+37
+00:04:02,830 --> 00:04:10,140
+ a Codex workshop to you guys at 11. And we'll have launch today at 12 and a code review with AI
+
+38
+00:04:10,140 --> 00:04:15,800
+ workshop provided by Adam. Adam is awesome. Like teach you how to do code review with AI
+
+39
+00:04:15,800 --> 00:04:20,830
+ across different platforms, using different models. That'll be awesome to code review
+
+40
+00:04:20,830 --> 00:04:26,190
+ before you submit. And then at four, it's submission deadline and there will be a demo.
+
+41
+00:04:26,830 --> 00:04:32,220
+ I will talk a little bit more about the demo and judging and then five o'clock at work.
+
+42
+00:04:32,220 --> 00:04:36,030
+ Very compact day, but I believe you guys can do it. Okay.
+
+43
+00:04:36,030 --> 00:04:41,620
+ All right. A little bit about Cozy Lab. Actually, I would like to introduce
+
+44
+00:04:41,620 --> 00:04:48,610
+ Nick to give a quick introduction about Cozy Lab, which is a space here. It's awesome.
+
+45
+00:04:50,630 --> 00:04:57,070
+ Thank you, Ian. Thank you for having me. So my name is Nick Lee. I'm the owner for Cozy Lab.
+
+46
+00:04:57,070 --> 00:05:02,950
+ So I'm creating the space for all the young entrepreneur talent in Vancouver to collaborating
+
+47
+00:05:02,950 --> 00:05:08,390
+ and work together in a low commitment and affordable price. And you can see we have over
+
+48
+00:05:08,390 --> 00:05:11,750
+ 23 rooms. We're open 24/7. So we're open 24/7. So we're open 24/7.
+
+49
+00:05:11,750 --> 00:05:16,950
+ So people can just come here and you can just scan the QR code. And the price is,
+
+50
+00:05:17,590 --> 00:05:23,170
+ our cost is really cheap. It's like 20 bucks. You can come here to use 24 hours. So we have a
+
+51
+00:05:23,170 --> 00:05:30,010
+ complimentary coffee. We have the oldest sparkling water and even beer or like a tequila if you want.
+
+52
+00:05:30,010 --> 00:05:35,410
+ Yeah. So, yeah, so, so we just want to try to create a space in the central Vancouver. And
+
+53
+00:05:35,410 --> 00:05:41,730
+ even if you want to book a room or like a monthly space, like we are open.
+
+54
+00:05:41,730 --> 00:05:48,130
+ We have a front desk like working from 9:30 to 5:30. Yeah. So if you have a need for
+
+55
+00:05:48,130 --> 00:05:54,960
+ using the co-working space, just let me know. Thank you, Nick. I think I need to host a
+
+56
+00:05:54,960 --> 00:06:02,390
+ beer hacks next time. I think you guys have a beer and tequila hacks. All right. Codex.
+
+57
+00:06:02,950 --> 00:06:12,410
+ Kai, do you want to give a quick introduction about Codex or? Okay, cool. No problem. I can help you
+
+58
+00:06:12,410 --> 00:06:19,770
+ to introduce. It's just one word. Everyone knows. Okay. So Codex is a coding agent that help you build and ship with AI
+
+59
+00:06:19,770 --> 00:06:26,700
+ powered by ChatGPT. I think everyone knows ChatGPT. And Codex is awesome. I use it day to day. I really
+
+60
+00:06:26,700 --> 00:06:33,490
+ like it. That's why I went on board Codex on this hackathon. And there will be Codex credit to you
+
+61
+00:06:33,490 --> 00:06:42,970
+ guys if you guys want to use it today. And yeah, we had Kevin introduce Pack. So I don't want to
+
+62
+00:06:42,970 --> 00:06:50,820
+ read it again. But yeah, just read it. And thank you for Pack for sponsoring our event.
+
+63
+00:06:50,820 --> 00:06:59,010
+ And Cloud. So it's Cloud, not Claw, but Cloud is awesome. And also a Vancouver company. I don't
+
+64
+00:06:59,010 --> 00:07:06,590
+ know before this event. So Cloud provides an infrastructure to host open source models.
+
+65
+00:07:06,590 --> 00:07:15,100
+ And it's really cheap. I shouldn't use cheap. It's cost efficient. And you can run a lot of tokens
+
+66
+00:07:15,100 --> 00:07:22,860
+ with like minimum price, 60% cheaper token. Yeah, they're just cheaper, but I'm fine with it. Okay, cool.
+
+67
+00:07:22,860 --> 00:07:31,340
+ So you will get Cloud AQI tokens today. And I believe George from Cloud has already
+
+68
+00:07:31,340 --> 00:07:37,490
+ standing structure in Discord. If you want to use it today, I highly recommend you try it out
+
+69
+00:07:37,490 --> 00:07:49,770
+ and just sign up and get the $25 credit. I cannot spend $25 in a day actually. So try it. Okay.
+
+70
+00:07:49,770 --> 00:07:55,610
+ ProMatch. So ProMatch is an AI powered platform that is able to make matching faster. It's also
+
+71
+00:07:55,610 --> 00:08:05,320
+ one of our sponsor, actually food sponsor. And it helps companies to do matching candidates,
+
+72
+00:08:05,320 --> 00:08:11,130
+ clients, teams and projects better. So if you're interested, talk to me. And I'm interested in
+
+73
+00:08:11,130 --> 00:08:18,210
+ introduce more about ProMatch to you. And Bravo. Okay, so we have representative from Bravo. Okay,
+
+74
+00:08:18,210 --> 00:08:25,040
+ if you haven't used Bravo, try. That's my day to day use for Chinese restaurants, actually. So
+
+75
+00:08:25,840 --> 00:08:33,890
+ you can use Amex to actually add credit to it as spending, you know, Amex, you got a lot of perks,
+
+76
+00:08:33,890 --> 00:08:41,380
+ right? So I use it every day. And you get rewards. Well, every time you're spending in restaurants,
+
+77
+00:08:41,380 --> 00:08:49,600
+ so and today they are going to sponsor $300 gift card, you can spend in restaurants.
+
+78
+00:08:49,600 --> 00:08:57,570
+ All right. That's pretty cool. And Elkis water. So water over there. It's awesome.
+
+79
+00:08:57,570 --> 00:09:06,750
+ Try it. And if you need more, let Mike know. Where's Mike? Mike is gone. Okay, that's fine. So
+
+80
+00:09:07,310 --> 00:09:11,950
+ they sponsor a lot of like sports events in Vancouver, like I think some like
+
+81
+00:09:11,950 --> 00:09:18,830
+ marathon events. And I talked to Mike, and he's really interesting, like working with hackathons.
+
+82
+00:09:18,830 --> 00:09:25,460
+ I believe you need to drink more water when you're cooling, right? So yeah, coffee is dehydrating,
+
+83
+00:09:25,460 --> 00:09:31,240
+ but water, you'll get it. Okay. Also community
+
+84
+00:09:31,240 --> 00:09:42,470
+ partners, IMP Capital, Industrial AI, and Triangle Club. We have Mars here, Triangle Club. We met at
+
+85
+00:09:42,470 --> 00:09:50,390
+ his base in Marine Drive. It's awesome. A good place for lunch, if you guys want to book a place
+
+86
+00:09:50,390 --> 00:09:58,690
+ for like a hangout, talk to Mars. And Alumify, which is one of my students startup and they help
+
+87
+00:10:00,100 --> 00:10:02,540
+ lifelong learning. So yeah.
+
+88
+00:10:02,540 --> 00:10:04,190
+ Talk to me if you're interested in that.
+
+89
+00:10:04,700 --> 00:10:14,690
+ Cool. Theme. A lot of people ask about it. Okay. So now it's a theme. Your second brain.
+
+90
+00:10:14,690 --> 00:10:22,290
+ Is it interesting? Any idea coming out? Okay. So today we're going to build AI that helps people
+
+91
+00:10:22,290 --> 00:10:29,210
+ remember, learn, reason, and act with the knowledge they already have. All right. Think
+
+92
+00:10:29,210 --> 00:10:36,400
+ about it. It can be software, it can be hardware. Anyone do a hardware hack today? Ooh, a hardware
+
+93
+00:10:36,400 --> 00:10:38,780
+ hack. What kind of hardware? Like the
+
+94
+00:10:40,470 --> 00:10:46,350
+ healthy part. Health tech. Yeah. Okay. Cool. Yeah. I do hardware hack. I have tons of raspberry
+
+95
+00:10:46,350 --> 00:10:54,460
+ pie at home. And yeah. And I hack on smart glasses as well. So if you need help with hardware, or if
+
+96
+00:10:54,460 --> 00:11:00,080
+ you want to bring hardware hack, let me know. I can mentor you or help you as well. And judging
+
+97
+00:11:00,080 --> 00:11:09,910
+ criteria, I will have four categories that judges will look into. Innovation, technical execution,
+
+98
+00:11:09,910 --> 00:11:13,190
+ usability, and problem relevance. I use hardware. I use hardware. I use hardware. I use hardware. I
+
+99
+00:11:13,190 --> 00:11:19,780
+ used to have fifth, which is go-to market plan. That's something that I really want to know, but
+
+100
+00:11:19,780 --> 00:11:27,210
+ it's not a must. If you have that covered, it will be a bonus. All right. So take a picture of it.
+
+101
+00:11:27,210 --> 00:11:35,030
+ I can post it on Discord later, but yeah. I'm trying to remember it. So you should cover these
+
+102
+00:11:35,030 --> 00:11:43,220
+ in your submission. Since we have a lot of people here, and I want everyone to demo your project
+
+103
+00:11:44,130 --> 00:11:48,860
+ to the judges. So each team has two minutes max. All right. Try to be
+
+104
+00:11:49,500 --> 00:11:55,740
+ elevator pitch with a demo. All right. Three things you want to show. Problem. What hurts?
+
+105
+00:11:55,740 --> 00:12:04,220
+ Demo. What did you build? A live demo. I don't like a kind of fake demo. A real demo. I really
+
+106
+00:12:04,220 --> 00:12:12,130
+ want to give a sum up. A real demo. Impact. Why does it matter? All right. We want to make impact.
+
+107
+00:12:12,130 --> 00:12:23,180
+ All right. Grand prize. $500 cash. All right. So last time I see cash prize, it was in my previous
+
+108
+00:12:24,220 --> 00:12:28,220
+ presentation. Not a lot of hackers offer cash prize. And thank you to our sponsor,
+
+109
+00:12:28,220 --> 00:12:34,640
+ Pack. And also $500 regular office space credit. So they have an office space as well.
+
+110
+00:12:34,640 --> 00:12:42,560
+ If you guys are interested, you can get that space on your wing. And best use of codecs.
+
+111
+00:12:42,560 --> 00:12:47,840
+ We've got a $100 token credit for each team member. All right. If you have three people, then
+
+112
+00:12:47,840 --> 00:12:55,920
+ 300. Five people, 500. I recommend you form a large team so you can collaborate. And again, what token
+
+113
+00:12:55,920 --> 00:13:02,760
+ token? Best use of codecs. 500 token credit for the team. All right. So no matter how large is our
+
+114
+00:13:02,760 --> 00:13:10,190
+ team, if you use codecs, then if you win it, you got 500. All right. Best AI for lifelong learning.
+
+115
+00:13:10,190 --> 00:13:15,070
+ That's my favorite because I teach bootcamp. So a full scholarship to Vibe Codec Bootcamp
+
+116
+00:13:15,070 --> 00:13:20,040
+ by HackUp. Actually, I'm going to teach it. If you are interested, go apply for that.
+
+117
+00:13:20,040 --> 00:13:26,750
+ And best AI for physical commerce. That's $300 gift card for Bravo. You can use it today.
+
+118
+00:13:26,750 --> 00:13:32,390
+ At the restaurant downstairs or somewhere around here with the Bravo sticker on there,
+
+119
+00:13:32,390 --> 00:13:39,130
+ you can just spend it. And bonus draw prize sponsored by Accused Order. Yeah, there will be a
+
+120
+00:13:39,130 --> 00:13:48,520
+ draw prize as well. And winner will get one of those 3D printed mask or avatar or whatever.
+
+121
+00:13:48,520 --> 00:13:54,760
+ I designed it and I printed at home. I hope you like it. All right. Discord. Again,
+
+122
+00:13:54,760 --> 00:14:00,900
+ the last time I showed the discord. Got it? Okay, cool. All right. So
+
+123
+00:14:00,900 --> 00:14:11,040
+ before we begin the hack, let's review code.com. Respect, include, build honestly, keep it safe,
+
+124
+00:14:11,040 --> 00:14:16,620
+ ask for help. All right. So everyone, not first time hackathon, right? Anyone here first time
+
+125
+00:14:16,620 --> 00:14:23,680
+ hackathon? Oh, we got a few. All right. So hackathon is more like a community event
+
+126
+00:14:23,680 --> 00:14:29,210
+ and I fall in love with since I'm in university. So that's why I keep doing it
+
+127
+00:14:29,210 --> 00:14:33,800
+ almost for free. All right. So yeah, try to follow the
+
+128
+00:14:33,800 --> 00:14:40,160
+ code of conduct. If you have any question, reach out to me or any staff here. And all the staff
+
+129
+00:14:40,160 --> 00:14:47,740
+ here today are volunteers. So they, yeah, a lot of positive staff here who make it happen. Thank
+
+130
+00:14:47,740 --> 00:14:58,720
+ you. Live coding. And we are going to start a team formation. So if you don't have a team,
+
+131
+00:14:58,720 --> 00:15:09,390
+ come to this room, actually. We have that room opening and we can talk about our project and
+
+132
+00:15:09,390 --> 00:15:22,300
+ then form a team. All right. And then we'll start the, we'll start the codex workshop at let's do it
+
+133
+00:15:22,300 --> 00:15:28,900
+ 10:30. So we can start early. All right. And we leave more time for your hacks. All right. I will
+
+134
+00:15:28,900 --> 00:15:34,740
+ let you guys know the submission link in the discord channel. There will be a link. You submit
+
+135
+00:15:34,740 --> 00:15:42,270
+ it. I don't really like dev post. I don't mean like it's not good. It's a little too complicated.
+
+136
+00:15:43,710 --> 00:15:50,910
+ We want to make it simple. And then it probably won't be just a link and it's a real project and
+
+137
+00:15:50,910 --> 00:16:05,090
+ judges will come and make a job. All right. Are you guys ready for live coding today? Let's do it.
+
